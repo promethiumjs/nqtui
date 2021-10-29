@@ -1,5 +1,5 @@
 import Component from "./Component.js";
-import { html, render } from "lit-html";
+import { html } from "lit-html";
+import { classMap } from "lit-html/directives/class-map.js";
 
-export { Component };
-export { html, render };
+export { Component, html, classMap };

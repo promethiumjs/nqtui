@@ -1,46 +1,77 @@
-import { html, render } from "lit-html";
+import { render } from "lit-html";
 
 export default class Component {
-  constructor(state, children) {
-    this.state = state || {};
-    this.children = children || {};
+  constructor(props) {
+    this.state = {};
+    this.children = {};
+    this.props = props || {};
   }
 
-  static createFrom(object) {
-    return Object.assign(new Component(), object);
+  static create(ClassName, props) {
+    return new ClassName(props);
   }
 
-  addChild(childNode, nodeName) {
-    this.children[nodeName] = childNode;
-    this.state[nodeName] = childNode.state;
+  static createInstanceFromObject(ClassName, object) {
+    return Object.assign(new ClassName(), object);
   }
 
-  addChildren(childNodeType, nodeListName, number) {
-    this.children[nodeListName] = [];
-    this.children[nodeListName].push(childNodeType);
+  addChild(ClassName, nodeName, props) {
+    this.children[nodeName] = new ClassName(props);
 
-    for (let i = 0; i < number - 1; i++) {
-      this.children[nodeListName].push(childNodeType.cloneSelf());
-    }
+    return this.children[nodeName];
   }
 
-  addState(state) {
+  addChildWithTiedState(ClassName, nodeName, props) {
+    this.children[nodeName] = new ClassName(props);
+    this.state[nodeName] = this.children[nodeName].state;
+
+    return this.children[nodeName];
+  }
+
+  addState(state, callback) {
     this.state = Object.assign(this.state, state);
+    if (typeof callback === "function") callback();
   }
 
-  cloneSelf() {
-    let clone = new Component();
-    let decoy = JSON.parse(JSON.stringify(this));
-    clone = Object.assign(clone, decoy);
+  addToChildren(ClassName, nodeListName, props) {
+    let child = new ClassName(props);
 
-    return clone;
+    if (!this.children[nodeListName]) {
+      this.children[nodeListName] = [];
+      this.state[nodeListName] = [];
+    }
+
+    this.children[nodeListName].push(child);
+
+    return child;
   }
 
-  content() {}
+  addToChildrenWithTiedState(ClassName, nodeListName, props) {
+    let child = new ClassName(props);
 
-  render(container, renderBefore) {
-    if (renderBefore) render(this.content(), container, { renderBefore });
-    else render(this.content(), container);
+    if (!this.children[nodeListName]) {
+      this.children[nodeListName] = [];
+      this.state[nodeListName] = [];
+    }
+
+    this.children[nodeListName].push(child);
+    this.state[nodeListName].push(child.state);
+
+    return child;
+  }
+
+  clone() {
+    //let clone = new Component();
+    //let decoy = JSON.parse(JSON.stringify(this));
+    //clone = Object.assign(clone, decoy);
+
+    //return clone
+    return Object.create(this);
+  }
+
+  render(container, renderOptions) {
+    if (renderOptions) render(this.template(), container, renderOptions);
+    else render(this.template(), container);
   }
 
   dispatchEvent(event, target) {}
