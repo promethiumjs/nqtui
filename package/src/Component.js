@@ -10,7 +10,18 @@ export default class Component {
 
   static create(ClassName, props) {
     let component = new ClassName(props);
+
+    component.subscribeToEvent(
+      "updateRoot",
+      component.render.bind(
+        component,
+        component.props.renderContainer,
+        component.props.renderOptions
+      )
+    );
+
     if (component.addChildNodes) component.addChildNodes();
+
     return component;
   }
 
@@ -50,6 +61,12 @@ export default class Component {
     this.state[nodeName] = this.children[nodeName].state;
 
     return this.children[nodeName];
+  }
+
+  addProps(props) {
+    this.props = Object.assign(this.props, props);
+
+    return this;
   }
 
   addState(state, event, args) {
@@ -108,17 +125,23 @@ export default class Component {
     return Object.create(this);
   }
 
+  content(props) {
+    if (props) this.addProps(props);
+
+    return this.template();
+  }
+
+  emitEvent(eventName, args) {
+    if (this.events[eventName])
+      this.events[eventName].forEach((fn) => fn(args));
+  }
+
   render(container, renderOptions) {
     if (renderOptions) {
       render(this.template(), container, renderOptions);
     } else {
       render(this.template(), container);
     }
-  }
-
-  emitEvent(eventName, args) {
-    if (this.events[eventName])
-      this.events[eventName].forEach((fn) => fn(args));
   }
 
   subscribeToEvent(eventName, callback) {
