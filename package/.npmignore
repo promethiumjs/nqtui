@@ -1,6 +1,7 @@
 *.swp
 *.map
 src
+docs
 
 # Logs
 logs
