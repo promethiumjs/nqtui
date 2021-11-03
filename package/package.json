@@ -1,6 +1,6 @@
 {
   "name": "nqtui",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "UI Library built on top of Lit-html",
   "source": "src/nqtui.js",
   "main": "nqtui.js",
@@ -8,11 +8,12 @@
   "scripts": {
     "watch": "parcel watch",
     "build": "parcel build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "jsdoc -c jsdoc.json"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Team-Nuqlear/nqtui.git"
+    "url": "git+https://github.com/nqtui/nqtui.git"
   },
   "author": "",
   "license": "MIT",
@@ -22,13 +23,15 @@
     }
   },
   "bugs": {
-    "url": "https://github.com/Team-Nuqlear/nqtui/issues"
+    "url": "https://github.com/nqtui/nqtui/issues"
   },
-  "homepage": "https://github.com/Team-Nuqlear/nqtui#readme",
+  "homepage": "https://github.com/nqtui/nqtui#readme",
+  "keywords": ["frontend", "UI", "javascript"],
   "dependencies": {
     "lit-html": "^2.0.1"
   },
   "devDependencies": {
+    "jsdoc": "^3.6.7",
     "parcel": "^2.0.0"
   }
 }
