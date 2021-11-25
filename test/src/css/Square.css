@@ -1,0 +1,11 @@
+.game__board-square {
+  display: inline-block;
+  background: var(--opal);
+  border: 1px solid var(--indigo-dye);
+  color: var(--indigo-dye);
+  width: 80px;
+  height: 80px;
+  font-size: 24px;
+  font-family: "Mochiy Pop P One", sans-serif;
+  text-align: center;
+}
