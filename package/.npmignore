@@ -1,7 +1,7 @@
 *.swp
 *.map
 src
-docs
+jsdoc.json
 
 # Logs
 logs

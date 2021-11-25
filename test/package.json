@@ -1,0 +1,21 @@
+{
+  "name": "nqtui-test",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lit-html": "^2.0.1"
+  },
+  "devDependencies": {
+    "sass": "^1.43.4",
+    "vite": "^2.6.13"
+  }
+}

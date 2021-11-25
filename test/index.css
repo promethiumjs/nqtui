@@ -1,0 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+P+One&display=swap");
+
+:root {
+  /* CSS HEX */
+  --indigo-dye: #243e56ff;
+  --maize-crayola: #f3ca40ff;
+  --opal: #9bc4bcff;
+
+  /* CSS HSL */
+  --indigo-dye: hsla(209, 41%, 24%, 1);
+  --maize-crayola: hsla(46, 88%, 60%, 1);
+  --opal: hsla(168, 26%, 69%, 1);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--opal);
+  font: 14px "Century Gothic", Futura, sans-serif;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: var(--indigo-dye);
+  font-family: "Mochiy Pop P One", sans-serif;
+}
+
+button:hover {
+  filter: hue-rotate(60deg);
+}

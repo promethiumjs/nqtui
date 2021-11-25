@@ -19,34 +19,28 @@ import { render } from "lit-html";
  */
 export default class Component {
   constructor(props) {
-    this.state = {};
     this.events = {};
     this.children = {};
     this.props = props || {};
+    this.$ = this.content;
+    this.updateChildNodes = true;
   }
 
   /**
-   * Create a new root component using the expression "Component.create()".
+   * Create a new component using the expression "Component.create()".
    * @param {class} ClassName - The class that you want your component to extend(The provided
    * class should be one that extends the Component class). This argument is required.
    * @param {object} props - An object of properties that will be set as your component's props object.
-   * This argument is also required, with a property of renderContainer. The value of the renderContainer
-   * property should be the DOM element under which the component will be rendered(it's parent).
    * @return {Component} The newly created component.
    */
   static create(ClassName, props) {
     let component = new ClassName(props);
 
-    component.subscribeToEvent(
-      "updateRoot",
-      component.render.bind(
-        component,
-        component.props.renderContainer,
-        component.props.renderOptions
-      )
-    );
-
-    if (component.addChildNodes) component.addChildNodes();
+    //if (component.addStaticChildNodes) {
+    //const $ = component.addChild.bind(component);
+    //const $s = component.addToChildren.bind(component);
+    //component.addStaticChildNodes($, $s);
+    //}
 
     return component;
   }
@@ -63,8 +57,31 @@ export default class Component {
   static createInstanceFromObject(ClassName, object, props) {
     let component = Object.assign(new ClassName(props), object);
 
-    component.subscribeToEvent(
-      "updateRoot",
+    return component;
+  }
+
+  /**
+   * Create a new root component using the expression "Component.createRoot()".
+   * @param {class} ClassName - The class that you want your component to extend(The provided
+   * class should be one that extends the Component class). This argument is required.
+   * @param {object} props - An object of properties that will be set as your component's props object.
+   * This argument is also required, with a property of renderContainer. The value of the renderContainer
+   * property should be the DOM element under which the component will be rendered(it's parent).
+   * @return {Component} The newly created component.
+   */
+  static createRoot(ClassName, props) {
+    let component = new ClassName(props);
+
+    if (
+      typeof component.props.renderContainer === "string" ||
+      component.props.renderContainer instanceof String
+    )
+      component.props.renderContainer = document.querySelector(
+        component.props.renderContainer
+      );
+
+    component.addEvent(
+      "renderRoot",
       component.render.bind(
         component,
         component.props.renderContainer,
@@ -72,7 +89,11 @@ export default class Component {
       )
     );
 
-    if (component.addChildNodes) component.addChildNodes();
+    //if (component.addStaticChildNodes) {
+    //const $ = component.addChild.bind(component);
+    //const $s = component.addToChildren.bind(component);
+    //component.addStaticChildNodes($, $s);
+    //}
 
     return component;
   }
@@ -87,39 +108,23 @@ export default class Component {
   addChild(ClassName, nodeName, props) {
     this.children[nodeName] = new ClassName(props);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      this.children[nodeName].subscribeToEvent(
-        "updateRoot",
-        this.events.updateRoot[0]
-      );
+    if (this.events.hasOwnProperty("renderRoot")) {
+      this.children[nodeName].addEvent("renderRoot", this.events.renderRoot[0]);
     }
 
-    if (this.children[nodeName].addChildNodes)
-      this.children[nodeName].addChildNodes();
-
-    return this.children[nodeName];
-  }
-
-  addChildWithTiedState(ClassName, nodeName, props) {
-    this.children[nodeName] = new ClassName(props);
-
-    if (this.events.hasOwnProperty("updateRoot")) {
-      this.children[nodeName].subscribeToEvent(
-        "updateRoot",
-        this.events.updateRoot[0]
-      );
-    }
-
-    if (this.children[nodeName].addChildNodes)
-      this.children[nodeName].addChildNodes();
-
-    this.state[nodeName] = this.children[nodeName].state;
+    //if (this.children[nodeName].addStaticChildNodes) {
+    //const $ = this.children[nodeName].addChild.bind(this.children[nodeName]);
+    //const $s = this.children[nodeName].addToChildren.bind(
+    //this.children[nodeName]
+    //);
+    //this.children[nodeName].addStaticChildNodes($, $s);
+    //}
 
     return this.children[nodeName];
   }
 
   addProps(props) {
-    this.props = Object.assign(this.props, props);
+    Object.assign(this.props, props);
 
     return this;
   }
@@ -129,13 +134,14 @@ export default class Component {
    * @param {Object} state - An object that represents the state to be added to your component. New properties will
    * be added to your component's state object and existing properties will be used to update the corresponding values
    * on your component's state object.
-   * @param {string} event - Event to be emmitted on your component.
+   * @param {string} events - Events to be emmitted on your component.
    * @param {object} [eventObject] - Arguments to be passed to the event callback.
    * @return {Component} Returns the component whose state was updated.
    */
-  addState(state, event, eventObject) {
-    this.state = Object.assign(this.state, state);
-    if (event) this.emitEvent(event, eventObject);
+  addState(state, events, eventObject) {
+    Object.assign(this.state, state);
+
+    this.update(events, eventObject);
 
     return this;
   }
@@ -153,37 +159,19 @@ export default class Component {
 
     if (!this.children[nodeListName]) {
       this.children[nodeListName] = [];
-      this.state[nodeListName] = [];
     }
 
     this.children[nodeListName].push(child);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      child.subscribeToEvent("updateRoot", this.events.updateRoot[0]);
+    if (this.events.hasOwnProperty("renderRoot")) {
+      child.addEvent("renderRoot", this.events.renderRoot[0]);
     }
 
-    if (child.addChildNodes) child.addChildNodes();
-
-    return child;
-  }
-
-  addToChildrenWithTiedState(ClassName, nodeListName, props) {
-    let child = new ClassName(props);
-
-    if (!this.children[nodeListName]) {
-      this.children[nodeListName] = [];
-      this.state[nodeListName] = [];
-    }
-
-    this.children[nodeListName].push(child);
-
-    if (this.events.hasOwnProperty("updateRoot")) {
-      child.subscribeToEvent("updateRoot", this.events.updateRoot[0]);
-    }
-
-    if (child.addChildNodes) child.addChildNodes();
-
-    this.state[nodeListName].push(child.state);
+    //if (child.addStaticChildNodes) {
+    //const $ = child.addChild.bind(child);
+    //const $s = child.addToChildren.bind(child);
+    //child.addStaticChildNodes($, $s);
+    //}
 
     return child;
   }
@@ -207,25 +195,42 @@ export default class Component {
   content(props) {
     if (props) this.addProps(props);
 
-    return this.template();
+    if (this.addChildNodes && this.updateChildNodes) {
+      this.children = {};
+
+      const $ = this.addChild.bind(this);
+      const $s = this.addToChildren.bind(this);
+
+      this.addChildNodes($, $s);
+      this.updateChildNodes = false;
+    }
+
+    const $ = this.children;
+
+    return this.template($);
   }
 
   /**
    * Emit an event on your component.
    * @param {string} eventName - A string representing the event type to be emitted.
    * @param {object} eventObject - An object containing properties to be used by event callbacks.
+   * @return {Component}  Your component.
    */
   emitEvent(eventName, eventObject) {
     if (this.events[eventName])
       this.events[eventName].forEach((fn) => fn(eventObject));
+
+    return this;
   }
 
   render(container, renderOptions) {
     if (renderOptions) {
-      render(this.template(), container, renderOptions);
+      render(this.content(), container, renderOptions);
     } else {
-      render(this.template(), container);
+      render(this.content(), container);
     }
+
+    return this;
   }
 
   /**
@@ -240,7 +245,7 @@ export default class Component {
    * already exist.
    * @param {Component~eventCallback} callback - Callback function to be called when the event is emitted.
    */
-  subscribeEvent(eventName, callback) {
+  addEvent(eventName, callback) {
     if (this.events[eventName]) {
       this.events[eventName].push(callback);
     } else {
@@ -249,12 +254,17 @@ export default class Component {
     }
 
     return {
-      unsubscribe: () =>
+      remove: () =>
         this.events[eventName] &&
         this.events[eventName].splice(
           this.events[eventName].indexOf(callback) >>> 0,
           1
         ),
     };
+  }
+
+  update(events, eventObject) {
+    this.updateChildNodes = true;
+    if (events) events.forEach((event) => this.emitEvent(event, eventObject));
   }
 }

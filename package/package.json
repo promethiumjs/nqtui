@@ -1,6 +1,6 @@
 {
   "name": "nqtui",
-  "version": "0.3.2",
+  "version": "0.4.1",
   "description": "UI Library built on top of Lit-html",
   "source": "src/nqtui.js",
   "main": "nqtui.js",
@@ -26,7 +26,11 @@
     "url": "https://github.com/nqtui/nqtui/issues"
   },
   "homepage": "https://github.com/nqtui/nqtui#readme",
-  "keywords": ["frontend", "UI", "javascript"],
+  "keywords": [
+    "frontend",
+    "UI",
+    "javascript"
+  ],
   "dependencies": {
     "lit-html": "^2.0.1"
   },

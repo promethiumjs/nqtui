@@ -54,7 +54,22 @@ export default class Component {
   }
 
   /**
-   * Create a new root component using the expression "Component.create()".
+   * Create a new component using the expression "Component.create()".
+   * @param {class} ClassName - The class that you want your component to extend(The provided
+   * class should be one that extends the Component class). This argument is required.
+   * @param {object} props - An object of properties that will be set as your component's props object.
+   * @return {Component} The newly created component.
+   */
+  static create(ClassName, props) {
+    let component = new ClassName(props);
+
+    if (component.addStaticChildNodes) component.addStaticChildNodes();
+
+    return component;
+  }
+
+  /**
+   * Create a new root component using the expression "Component.createRoot()".
    * @param {class} ClassName - The class that you want your component to extend(The provided
    * class should be one that extends the Component class). This argument is required.
    * @param {object} props - An object of properties that will be set as your component's props object.
@@ -62,11 +77,11 @@ export default class Component {
    * property should be the DOM element under which the component will be rendered(it's parent).
    * @return {Component} The newly created component.
    */
-  static create(ClassName, props) {
+  static createRoot(ClassName, props) {
     let component = new ClassName(props);
 
-    component.subscribeToEvent(
-      "updateRoot",
+    component.subscribeEvent(
+      "renderRoot",
       component.render.bind(
         component,
         component.props.renderContainer,
@@ -74,7 +89,7 @@ export default class Component {
       )
     );
 
-    if (component.addChildNodes) component.addChildNodes();
+    if (component.addStaticChildNodes) component.addStaticChildNodes();
 
     return component;
   }
@@ -91,8 +106,8 @@ export default class Component {
   static createInstanceFromObject(ClassName, object, props) {
     let component = Object.assign(new ClassName(props), object);
 
-    component.subscribeToEvent(
-      "updateRoot",
+    component.subscribeEvent(
+      "renderRoot",
       component.render.bind(
         component,
         component.props.renderContainer,
@@ -100,7 +115,7 @@ export default class Component {
       )
     );
 
-    if (component.addChildNodes) component.addChildNodes();
+    if (component.addStaticChildNodes) component.addStaticChildNodes();
 
     return component;
   }
@@ -115,15 +130,15 @@ export default class Component {
   addChild(ClassName, nodeName, props) {
     this.children[nodeName] = new ClassName(props);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      this.children[nodeName].subscribeToEvent(
-        "updateRoot",
-        this.events.updateRoot[0]
+    if (this.events.hasOwnProperty("renderRoot")) {
+      this.children[nodeName].subscribeEvent(
+        "renderRoot",
+        this.events.renderRoot[0]
       );
     }
 
-    if (this.children[nodeName].addChildNodes)
-      this.children[nodeName].addChildNodes();
+    if (this.children[nodeName].addStaticChildNodes)
+      this.children[nodeName].addStaticChildNodes();
 
     return this.children[nodeName];
   }
@@ -131,15 +146,15 @@ export default class Component {
   addChildWithTiedState(ClassName, nodeName, props) {
     this.children[nodeName] = new ClassName(props);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      this.children[nodeName].subscribeToEvent(
-        "updateRoot",
-        this.events.updateRoot[0]
+    if (this.events.hasOwnProperty("renderRoot")) {
+      this.children[nodeName].subscribeEvent(
+        "renderRoot",
+        this.events.renderRoot[0]
       );
     }
 
-    if (this.children[nodeName].addChildNodes)
-      this.children[nodeName].addChildNodes();
+    if (this.children[nodeName].addStaticChildNodes)
+      this.children[nodeName].addStaticChildNodes();
 
     this.state[nodeName] = this.children[nodeName].state;
 
@@ -186,11 +201,11 @@ export default class Component {
 
     this.children[nodeListName].push(child);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      child.subscribeToEvent("updateRoot", this.events.updateRoot[0]);
+    if (this.events.hasOwnProperty("renderRoot")) {
+      child.subscribeEvent("renderRoot", this.events.renderRoot[0]);
     }
 
-    if (child.addChildNodes) child.addChildNodes();
+    if (child.addStaticChildNodes) child.addStaticChildNodes();
 
     return child;
   }
@@ -205,11 +220,11 @@ export default class Component {
 
     this.children[nodeListName].push(child);
 
-    if (this.events.hasOwnProperty("updateRoot")) {
-      child.subscribeToEvent("updateRoot", this.events.updateRoot[0]);
+    if (this.events.hasOwnProperty("renderRoot")) {
+      child.subscribeEvent("renderRoot", this.events.renderRoot[0]);
     }
 
-    if (child.addChildNodes) child.addChildNodes();
+    if (child.addStaticChildNodes) child.addStaticChildNodes();
 
     this.state[nodeListName].push(child.state);
 
@@ -234,6 +249,7 @@ export default class Component {
    */
   content(props) {
     if (props) this.addProps(props);
+    if (this.addDynamicChildNodes) this.addDynamicChildNodes();
 
     return this.template();
   }
@@ -242,10 +258,13 @@ export default class Component {
    * Emit an event on your component.
    * @param {string} eventName - A string representing the event type to be emitted.
    * @param {object} eventObject - An object containing properties to be used by event callbacks.
+   * @return {Component}  Your component.
    */
   emitEvent(eventName, eventObject) {
     if (this.events[eventName])
       this.events[eventName].forEach((fn) => fn(eventObject));
+
+    return this;
   }
 
   render(container, renderOptions) {
@@ -254,6 +273,8 @@ export default class Component {
     } else {
       render(this.template(), container);
     }
+
+    return this;
   }
 
   /**
@@ -296,13 +317,13 @@ export default class Component {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addChild">addChild</a></li><li><a href="global.html#addState">addState</a></li><li><a href="global.html#addToChildren">addToChildren</a></li><li><a href="global.html#content">content</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createInstanceFromObject">createInstanceFromObject</a></li><li><a href="global.html#emitEvent">emitEvent</a></li><li><a href="global.html#subscribeEvent">subscribeEvent</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addChild">addChild</a></li><li><a href="global.html#addState">addState</a></li><li><a href="global.html#addToChildren">addToChildren</a></li><li><a href="global.html#content">content</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createInstanceFromObject">createInstanceFromObject</a></li><li><a href="global.html#createRoot">createRoot</a></li><li><a href="global.html#emitEvent">emitEvent</a></li><li><a href="global.html#subscribeEvent">subscribeEvent</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Wed Nov 03 2021 22:13:25 GMT+0000 (Greenwich Mean Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Sat Nov 06 2021 21:35:08 GMT+0000 (Greenwich Mean Time)
 </footer>
 
 <script> prettyPrint(); </script>
