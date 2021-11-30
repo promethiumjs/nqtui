@@ -1,4 +1,5 @@
 import { render } from "lit-html";
+import { setUpdateFunction } from "./$";
 //@ts-check
 
 /**
@@ -20,58 +21,26 @@ import { render } from "lit-html";
 export default class Component {
   constructor(props) {
     this.events = {};
-    this.children = {};
     this.props = props || {};
-    this.$ = this.content;
-    this.updateChildNodes = true;
   }
 
-  /**
-   * Create a new component using the expression "Component.create()".
-   * @param {class} ClassName - The class that you want your component to extend(The provided
-   * class should be one that extends the Component class). This argument is required.
-   * @param {object} props - An object of properties that will be set as your component's props object.
-   * @return {Component} The newly created component.
-   */
-  static create(ClassName, props) {
-    let component = new ClassName(props);
+  static createFromObject(object) {
+    class NewClassComponent extends Component {
+      constructor(props) {
+        super(props);
 
-    //if (component.addStaticChildNodes) {
-    //const $ = component.addChild.bind(component);
-    //const $s = component.addToChildren.bind(component);
-    //component.addStaticChildNodes($, $s);
-    //}
+        let objectKeys = Object.keys(object);
 
-    return component;
+        objectKeys.forEach((objectKey) => {
+          this[objectKey] = object[objectKey];
+        });
+      }
+    }
+
+    return NewClassComponent;
   }
 
-  /**
-   * Create a new root component from an existing object using the expression "Component.createInstanceFromObject()".
-   * @param {class} ClassName - The class that you want your component to extend(The provided
-   * class should be one that extends the Component class). This argument is required.
-   * @param {object} props - An object of properties that will be set as your component's props object.
-   * This argument is also required, with a property of renderContainer. The value of the renderContainer
-   * property should be the DOM element under which the component will be rendered(it's parent).
-   * @return {Component} The newly created component.
-   */
-  static createInstanceFromObject(ClassName, object, props) {
-    let component = Object.assign(new ClassName(props), object);
-
-    return component;
-  }
-
-  /**
-   * Create a new root component using the expression "Component.createRoot()".
-   * @param {class} ClassName - The class that you want your component to extend(The provided
-   * class should be one that extends the Component class). This argument is required.
-   * @param {object} props - An object of properties that will be set as your component's props object.
-   * This argument is also required, with a property of renderContainer. The value of the renderContainer
-   * property should be the DOM element under which the component will be rendered(it's parent).
-   * @return {Component} The newly created component.
-   */
-  static createRoot(ClassName, props) {
-    let component = new ClassName(props);
-
+  static createClassComponentRoot(component) {
     if (
       typeof component.props.renderContainer === "string" ||
       component.props.renderContainer instanceof String
@@ -80,47 +49,76 @@ export default class Component {
         component.props.renderContainer
       );
 
-    component.addEvent(
-      "renderRoot",
-      component.render.bind(
-        component,
-        component.props.renderContainer,
-        component.props.renderOptions
-      )
+    let updateFunction = component.render.bind(
+      component,
+      component.props.renderContainer,
+      component.props.renderOptions
     );
 
-    //if (component.addStaticChildNodes) {
-    //const $ = component.addChild.bind(component);
-    //const $s = component.addToChildren.bind(component);
-    //component.addStaticChildNodes($, $s);
-    //}
+    component.addEvent("renderRoot", updateFunction);
+
+    setUpdateFunction(updateFunction);
+
+    updateFunction();
+
+    return component;
+  }
+
+  static createFunctionalComponentRoot(component, props) {
+    if (
+      typeof props.renderContainer === "string" ||
+      props.renderContainer instanceof String
+    )
+      props.renderContainer = document.querySelector(props.renderContainer);
+
+    let updateFunction = render.bind(
+      component,
+      component(props),
+      props.renderContainer,
+      props.renderOptions
+    );
+
+    setUpdateFunction(updateFunction);
+
+    updateFunction();
 
     return component;
   }
 
   /**
-   * Add a single child component to your component.
-   * @param {class} ClassName - The class type of which you want the child component to be.
-   * @param {string} nodeName - The property name with which you would like to reference the child component.
-   * @param {object} [props] - An object of properties that will be set as the child component's props object.
-   * @return {Component} The newly added child component.
+   * Create a new root component from an existing object using the expression "Component.createInstanceFromObject()".
+   * @param {class} ComponentType - The class that you want your component to extend(The provided
+   * class should be one that extends the Component class). This argument is required.
+   * @param {object} props - An object of properties that will be set as your component's props object.
+   * This argument is also required, with a property of renderContainer. The value of the renderContainer
+   * property should be the DOM element under which the component will be rendered(it's parent).
+   * @return {Component} The newly created component.
    */
-  addChild(ClassName, nodeName, props) {
-    this.children[nodeName] = new ClassName(props);
+  static createRootFromObject(object, props) {
+    let component = Object.assign(new Component(props), object);
 
-    if (this.events.hasOwnProperty("renderRoot")) {
-      this.children[nodeName].addEvent("renderRoot", this.events.renderRoot[0]);
+    return Component.createClassComponentRoot(component);
+  }
+
+  /**
+   * Create a new root component using the expression "Component.createRoot()".
+   * @param {class} ComponentType - The class that you want your component to extend(The provided
+   * class should be one that extends the Component class). This argument is required.
+   * @param {object} props - An object of properties that will be set as your component's props object.
+   * This argument is also required, with a property of renderContainer. The value of the renderContainer
+   * property should be the DOM element under which the component will be rendered(it's parent).
+   * @return {Component} The newly created component.
+   */
+  static createRoot(ComponentType, props) {
+    if (ComponentType.prototype && ComponentType.prototype.isClassComponent) {
+      let component = new ComponentType(props);
+
+      return Component.createClassComponentRoot(component);
+    } else {
+      let component = ComponentType;
+
+      return Component.createFunctionalComponentRoot(component, props);
     }
-
-    //if (this.children[nodeName].addStaticChildNodes) {
-    //const $ = this.children[nodeName].addChild.bind(this.children[nodeName]);
-    //const $s = this.children[nodeName].addToChildren.bind(
-    //this.children[nodeName]
-    //);
-    //this.children[nodeName].addStaticChildNodes($, $s);
-    //}
-
-    return this.children[nodeName];
   }
 
   addProps(props) {
@@ -142,93 +140,6 @@ export default class Component {
     Object.assign(this.state, state);
 
     this.update(events, eventObject);
-
-    return this;
-  }
-
-  /**
-   * Add a single child component to your component's children array containing children of the same type.
-   * @param {class} ClassName - The class type of which you want the child component to be.
-   * @param {string} nodeName - The property name that is currently being used to reference the array of chilren. If property
-   * doesn't exist, it will be initialized with an empty array before the new child component is added.
-   * @param {object} [props] - An object of properties that will be set as the child component's props object.
-   * @return {Component} The newly added child component.
-   */
-  addToChildren(ClassName, nodeListName, props) {
-    let child = new ClassName(props);
-
-    if (!this.children[nodeListName]) {
-      this.children[nodeListName] = [];
-    }
-
-    this.children[nodeListName].push(child);
-
-    if (this.events.hasOwnProperty("renderRoot")) {
-      child.addEvent("renderRoot", this.events.renderRoot[0]);
-    }
-
-    //if (child.addStaticChildNodes) {
-    //const $ = child.addChild.bind(child);
-    //const $s = child.addToChildren.bind(child);
-    //child.addStaticChildNodes($, $s);
-    //}
-
-    return child;
-  }
-
-  clone() {
-    //let clone = new Component();
-    //let decoy = JSON.parse(JSON.stringify(this));
-    //clone = Object.assign(clone, decoy);
-
-    //return clone
-    return Object.create(this);
-  }
-
-  /**
-   * Update your component's template and return it.
-   * @param {object} [props] - An object of properties that will used to update component's props object. New properties will
-   * be added to the component's props object and existing properties will be used to update the corresponding values
-   * on your component's props object.
-   * @return {TemplateResult} A lit-html TemplateResult object representing your component's template.
-   */
-  content(props) {
-    if (props) this.addProps(props);
-
-    if (this.addChildNodes && this.updateChildNodes) {
-      this.children = {};
-
-      const $ = this.addChild.bind(this);
-      const $s = this.addToChildren.bind(this);
-
-      this.addChildNodes($, $s);
-      this.updateChildNodes = false;
-    }
-
-    const $ = this.children;
-
-    return this.template($);
-  }
-
-  /**
-   * Emit an event on your component.
-   * @param {string} eventName - A string representing the event type to be emitted.
-   * @param {object} eventObject - An object containing properties to be used by event callbacks.
-   * @return {Component}  Your component.
-   */
-  emitEvent(eventName, eventObject) {
-    if (this.events[eventName])
-      this.events[eventName].forEach((fn) => fn(eventObject));
-
-    return this;
-  }
-
-  render(container, renderOptions) {
-    if (renderOptions) {
-      render(this.content(), container, renderOptions);
-    } else {
-      render(this.content(), container);
-    }
 
     return this;
   }
@@ -263,8 +174,32 @@ export default class Component {
     };
   }
 
+  /**
+   * Emit an event on your component.
+   * @param {string} eventName - A string representing the event type to be emitted.
+   * @param {object} eventObject - An object containing properties to be used by event callbacks.
+   * @return {Component}  Your component.
+   */
+  emitEvent(eventName, eventObject) {
+    if (this.events[eventName])
+      this.events[eventName].forEach((fn) => fn(eventObject));
+
+    return this;
+  }
+
+  render(container, renderOptions) {
+    if (renderOptions) {
+      render(this.construct(), container, renderOptions);
+    } else {
+      render(this.construct(), container);
+    }
+
+    return this;
+  }
+
   update(events, eventObject) {
-    this.updateChildNodes = true;
     if (events) events.forEach((event) => this.emitEvent(event, eventObject));
   }
 }
+
+Component.prototype.isClassComponent = true;

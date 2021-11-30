@@ -1,6 +1,5 @@
-import { Component, html } from "nqtui";
-import Game from "./src/components/Game";
+import { Component } from "nqtui";
+import App from "./src/components/App";
 import "./index.css";
 
-const NewGame = Component.createRoot(Game, { renderContainer: "body" });
-NewGame.emitEvent("renderRoot");
+Component.createRoot(App, { renderContainer: "body" });

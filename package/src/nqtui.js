@@ -1,4 +1,5 @@
 import Component from "./Component.js";
+import { $ } from "./$.js";
 import { html } from "lit-html";
 import { classMap } from "lit-html/directives/class-map.js";
 import { styleMap } from "lit-html/directives/style-map.js";
@@ -9,10 +10,22 @@ import { live } from "lit-html/directives/live.js";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { ref } from "lit-html/directives/ref.js";
 import { until } from "lit-html/directives/until.js";
+import {
+  adaptHookStore,
+  unadaptHookStore,
+  adaptState,
+  adaptReducer,
+  adaptEffect,
+  adaptCallback,
+  adaptMemo,
+  adaptRef,
+  resetHooks,
+} from "./hooks.js";
 
 export {
   Component,
-  html,
+  $,
+  html as h,
   classMap,
   styleMap,
   guard,
@@ -22,4 +35,13 @@ export {
   ifDefined,
   ref,
   until,
+  adaptHookStore,
+  unadaptHookStore,
+  adaptState,
+  adaptReducer,
+  adaptEffect,
+  adaptCallback,
+  adaptMemo,
+  adaptRef,
+  resetHooks,
 };
