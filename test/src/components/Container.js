@@ -4,15 +4,12 @@ const Container = ({ $click, $noop }) => {
   const [count, setCount] = adaptState(0);
   const [count1, setCount1] = adaptState(0);
 
-  const emitEvents = adaptEvents([$click, "render", $noop, "render"], null, {
-    increment: count1,
-  });
+  const emitEvents = adaptEvents([$noop, "render", $click]);
 
   const emitEvents1 = adaptEvents(
-    [$noop, $click, "render", "render", "render"],
-    null,
+    [$noop, "render", "render", $click, "render"],
     {
-      increment: count,
+      increment: count1,
     }
   );
 

@@ -4,8 +4,8 @@ import Container from "./Container";
 const App = () => {
   return html`<div>
     ${$(Container, {
-      $click: ({ increment }) => console.log("clicked", increment),
-      $noop: ({ increment }) => console.log("nooped", increment),
+      $click: () => console.log("clicked"),
+      $noop: () => console.log("nooped"),
     })}
   </div>`;
 };
