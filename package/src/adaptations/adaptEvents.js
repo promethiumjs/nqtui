@@ -2,7 +2,7 @@ import { getCurrentStore } from "./adaptations";
 import guardsChanged from "./guardsChanged";
 import { callRenderFunction } from "../helpers";
 
-function adaptEvents(eventArray, guards, eventObject) {
+function adaptEvents(eventArray, eventObject) {
   const currentStore = getCurrentStore();
 
   if (currentStore && !currentStore.eventEmitters) {
@@ -26,6 +26,13 @@ function adaptEvents(eventArray, guards, eventObject) {
       currentStore.eventEmitters[
         currentStore.currentAdaptationIds.eventEmitter
       ];
+
+    const guards = [];
+    if (eventObject) {
+      Object.keys(eventObject).forEach((eventObjectKey) =>
+        guards.push(eventObject[eventObjectKey])
+      );
+    }
 
     if (guardsChanged(eventEmitter[1], guards)) {
       let emitter = () => {
