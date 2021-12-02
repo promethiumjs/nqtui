@@ -1,8 +1,10 @@
 import { AsyncDirective, directive } from "lit-html/async-directive.js";
+import { adaptStore, detonateStore } from "./adaptations/adaptations";
+import { runCleanupsAndEffects } from "./adaptations/adaptEffect";
 
 class $$ extends AsyncDirective {
-  constructor(part) {
-    super(part);
+  constructor(root) {
+    super(root);
 
     this.initialization = true;
   }
@@ -10,7 +12,6 @@ class $$ extends AsyncDirective {
   initializeComponent(Component, props) {
     if (Component.prototype && Component.prototype.isClassComponent) {
       this.Component = new Component(props);
-      this.Component.addEvent("renderRoot", updateFunction);
     }
 
     if (this.Component && this.Component.initialized) {
@@ -19,46 +20,47 @@ class $$ extends AsyncDirective {
 
     this.initialization = false;
 
-    this.createHookId();
+    this.createStoreId();
   }
 
-  createHookId() {
-    const hookId = `${Math.random()}${Math.random()}`;
-    this.hookId = hookId;
+  createStoreId() {
+    this.storeId = {};
   }
 
   reconnected() {
-    this.Component.reconnected();
+    this.initialization = true;
   }
 
   disconnected() {
-    this.Component.disconnected();
+    detonateStore(this.storeId);
   }
 
-  update(part, [Component, props]) {
+  update(parent, [Component, props]) {
     if (this.initialization) {
       this.initializeComponent(Component, props);
     }
 
-    return this.render(Component, props);
+    return this.render(Component, props, parent.parentNode);
   }
 
-  render(Component, props) {
-    if (this.Component) this.Component.addProps(props);
-    return this.Component ? this.Component.construct(props) : Component(props);
+  render(Component, props, parent) {
+    if (this.Component) {
+      this.Component.addProps(props);
+      this.Component.parent = parent;
+    }
+
+    adaptStore(this.storeId);
+
+    try {
+      return this.Component
+        ? this.Component.construct({ parent, ...props })
+        : Component({ parent, ...props });
+    } finally {
+      runCleanupsAndEffects(this.storeId);
+    }
   }
 }
 
 const $ = directive($$);
 
-let updateFunction = null;
-
-function setUpdateFunction(newUpdateFunction) {
-  updateFunction = newUpdateFunction;
-}
-
-function callUpdateFunction() {
-  updateFunction();
-}
-
-export { $, setUpdateFunction, callUpdateFunction };
+export default $;
