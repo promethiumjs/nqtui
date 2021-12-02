@@ -1,32 +1,50 @@
 import { getCurrentStore } from "./adaptations";
+import guardsChanged from "./guardsChanged";
 import { callRenderFunction } from "../helpers";
 
-function adaptEvents(eventsObject) {
+function adaptEvents(eventArray, guards, eventObject) {
   const currentStore = getCurrentStore();
 
-  if (currentStore && !currentStore.events) {
-    currentStore.events = {};
+  if (currentStore && !currentStore.eventEmitters) {
+    currentStore.eventEmitters = [];
+    currentStore.currentAdaptationIds.eventEmitter = 0;
   }
 
   if (currentStore) {
-    let eventArray = [];
-    Object.keys(eventsObject).forEach((eventKey) => {
-      if (!currentStore.events[eventKey]) {
-        if (typeof eventsObject[eventKey] == "function") {
-          currentStore.events[eventKey] = eventsObject[eventKey];
-        }
+    if (
+      !(
+        currentStore.currentAdaptationIds.eventEmitter in
+        currentStore.eventEmitters
+      )
+    ) {
+      currentStore.eventEmitters[
+        currentStore.currentAdaptationIds.eventEmitter
+      ] = [];
+    }
+
+    let eventEmitter =
+      currentStore.eventEmitters[
+        currentStore.currentAdaptationIds.eventEmitter
+      ];
+
+    if (guardsChanged(eventEmitter[1], guards)) {
+      let emitter = () => {
+        eventArray.forEach((event) => {
+          typeof event == "function"
+            ? event(eventObject)
+            : event === "render" && callRenderFunction();
+        });
+      };
+
+      try {
+        eventEmitter[0] = emitter;
+      } finally {
+        eventEmitter[1] = guards;
       }
+    }
 
-      eventsObject[eventKey] === "render"
-        ? eventArray.push(callRenderFunction)
-        : eventArray.push(currentStore.events[eventKey]);
-    });
-
-    return () => {
-      eventArray.forEach(
-        (eventFunction) => typeof eventFunction == "function" && eventFunction()
-      );
-    };
+    currentStore.currentAdaptationIds.eventEmitter++;
+    return eventEmitter[0];
   } else {
     throw new Error(
       "adaptEvents() can only be used inside a Component or a Custom Adaptation."
