@@ -1,5 +1,5 @@
 function guardsChanged(guards1, guards2) {
-  if (guards1 === undefined || guards2 === undefined) {
+  if (!guards1 || !guards2) {
     return true;
   }
 
