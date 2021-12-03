@@ -1,5 +1,5 @@
 import { adaptStore, releaseCurrentStore } from "./adaptations/adaptations";
-import { runCleanupsAndEffects } from "./adaptations/adaptEffect";
+import { runAfterCleanupsAndEffects } from "./adaptations/adaptEffect";
 
 let storeId = null;
 
@@ -22,7 +22,7 @@ function callRenderFunction() {
     renderFunction();
     releaseCurrentStore();
   } finally {
-    runCleanupsAndEffects(storeId);
+    runAfterCleanupsAndEffects(storeId);
   }
 }
 

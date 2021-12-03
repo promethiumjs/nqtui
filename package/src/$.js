@@ -1,6 +1,6 @@
 import { AsyncDirective, directive } from "lit-html/async-directive.js";
 import { adaptStore, detonateStore } from "./adaptations/adaptations";
-import { runCleanupsAndEffects } from "./adaptations/adaptEffect";
+import { runAfterCleanupsAndEffects } from "./adaptations/adaptEffect";
 
 class $$ extends AsyncDirective {
   constructor(root) {
@@ -56,7 +56,7 @@ class $$ extends AsyncDirective {
         ? this.Component.construct({ parent, ...props })
         : Component({ parent, ...props });
     } finally {
-      runCleanupsAndEffects(this.storeId);
+      runAfterCleanupsAndEffects(this.storeId);
     }
   }
 }

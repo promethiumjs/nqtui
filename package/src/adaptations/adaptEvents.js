@@ -2,7 +2,7 @@ import { getCurrentStore } from "./adaptations";
 import guardsChanged from "./guardsChanged";
 import { callRenderFunction } from "../helpers";
 
-function adaptEvents(eventArray, eventObject) {
+function adaptEvents(eventArray) {
   const currentStore = getCurrentStore();
 
   if (currentStore && !currentStore.eventEmitters) {
@@ -17,41 +17,22 @@ function adaptEvents(eventArray, eventObject) {
         currentStore.eventEmitters
       )
     ) {
-      currentStore.eventEmitters[
-        currentStore.currentAdaptationIds.eventEmitter
-      ] = [];
-    }
-
-    let eventEmitter =
-      currentStore.eventEmitters[
-        currentStore.currentAdaptationIds.eventEmitter
-      ];
-
-    const guards = [];
-    if (eventObject) {
-      Object.keys(eventObject).forEach((eventObjectKey) =>
-        guards.push(eventObject[eventObjectKey])
-      );
-    }
-
-    if (guardsChanged(eventEmitter[1], guards)) {
-      let emitter = () => {
+      const eventEmitter = (eventArguments) => {
         eventArray.forEach((event) => {
           typeof event == "function"
-            ? event(eventObject)
+            ? event(eventArguments)
             : event === "render" && callRenderFunction();
         });
       };
 
-      try {
-        eventEmitter[0] = emitter;
-      } finally {
-        eventEmitter[1] = guards;
-      }
+      currentStore.eventEmitters[
+        currentStore.currentAdaptationIds.eventEmitter
+      ] = eventEmitter;
     }
 
-    currentStore.currentAdaptationIds.eventEmitter++;
-    return eventEmitter[0];
+    return currentStore.eventEmitters[
+      currentStore.currentAdaptationIds.eventEmitter++
+    ];
   } else {
     throw new Error(
       "adaptEvents() can only be used inside a Component or a Custom Adaptation."
