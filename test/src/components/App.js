@@ -1,13 +1,15 @@
-import { html, $ } from "nqtui";
+import { html, $, adaptState } from "nqtui";
 import Container from "./Container";
 
 const App = () => {
-  return html`<div>
-    ${$(Container, {
-      $click: (count) => console.log("clicked", count),
-      $noop: (count) => console.log("nooped", count),
-    })}
-  </div>`;
+  const [visible, setVisibilty] = adaptState(true);
+
+  const content = visible
+    ? $(Container, {
+        $click: (count) => console.log(count),
+      })
+    : "";
+  return html`<div>${content}</div>`;
 };
 
 export default App;

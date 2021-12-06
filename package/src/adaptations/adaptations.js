@@ -31,17 +31,19 @@ function releaseCurrentStore() {
 function detonateStore(storeId) {
   const currentStore = getStore(storeId);
 
-  try {
-    if (currentStore.cleanups) {
-      for (let cleanup of currentStore.cleanups) {
-        if (typeof cleanup == "function") {
-          cleanup();
-        }
-      }
-    }
-  } finally {
-    stores.delete(storeId);
+  if (currentStore.beforeCleanups) {
+    currentStore.beforeCleanups.forEach(
+      (cleanup) => typeof cleanup == "function" && cleanup()
+    );
   }
+
+  if (currentStore.afterCleanups) {
+    currentStore.afterCleanups.forEach(
+      (cleanup) => typeof cleanup == "function" && cleanup()
+    );
+  }
+
+  stores.delete(storeId);
 }
 
 export {

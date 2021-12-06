@@ -18,11 +18,7 @@ function adaptUnifiedState(initialStateValue) {
 
         if (effectArray) {
           effectArray.forEach((effect) => {
-            typeof effect == "function"
-              ? effect()
-              : effect == "render"
-              ? callRenderFunction()
-              : "";
+            effect === "render" ? callRenderFunction() : effect();
           });
         } else {
           callRenderFunction();

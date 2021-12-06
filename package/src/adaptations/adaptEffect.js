@@ -1,4 +1,4 @@
-import { getCurrentStore, getStore } from "./adaptations";
+import { getCurrentStore } from "./adaptations";
 import guardsChanged from "./guardsChanged";
 
 function adaptEffect(fn, guards, beforeRender) {
@@ -8,6 +8,55 @@ function adaptEffect(fn, guards, beforeRender) {
     beforeRenderEffectAdaptation(currentStore, fn, guards);
   } else {
     afterRenderEffectAdaptation(currentStore, fn, guards);
+  }
+}
+
+function afterRenderEffectAdaptation(currentStore, fn, guards) {
+  if (currentStore && !currentStore.afterEffects) {
+    currentStore.afterEffects = [];
+    currentStore.currentAdaptationIds.afterEffect = 0;
+  }
+
+  if (currentStore) {
+    if (
+      !(
+        currentStore.currentAdaptationIds.afterEffect in
+        currentStore.afterEffects
+      )
+    ) {
+      currentStore.afterEffects[currentStore.currentAdaptationIds.afterEffect] =
+        [];
+    }
+
+    let afterEffectId = currentStore.currentAdaptationIds.afterEffect;
+    let afterEffect = currentStore.afterEffects[afterEffectId];
+
+    if (guardsChanged(afterEffect[1], guards)) {
+      afterEffect[0] = () => {
+        if (currentStore.afterCleanups) {
+          if (typeof currentStore.afterCleanups[afterEffectId] == "function") {
+            currentStore.afterCleanups[afterEffectId]();
+            currentStore.afterCleanups[afterEffectId] = undefined;
+          }
+        }
+
+        if (!currentStore.afterCleanups) {
+          currentStore.afterCleanups = [];
+        }
+
+        currentStore.afterCleanups[afterEffectId] = fn();
+      };
+
+      effectAndCleanupArray.push(afterEffect[0]);
+      afterEffect[0] = null;
+      afterEffect[1] = guards;
+    }
+
+    currentStore.currentAdaptationIds.afterEffect++;
+  } else {
+    throw new Error(
+      "adaptEffect() can only be used inside a Component or a Custom Adaptation."
+    );
   }
 }
 
@@ -38,29 +87,23 @@ function beforeRenderEffectAdaptation(currentStore, fn, guards) {
           if (
             typeof currentStore.beforeCleanups[beforeEffectId] == "function"
           ) {
-            try {
-              currentStore.beforeCleanups[beforeEffectId]();
-            } finally {
-              currentStore.beforeCleanups[beforeEffectId] = undefined;
-            }
+            currentStore.beforeCleanups[beforeEffectId]();
+            currentStore.beforeCleanups[beforeEffectId] = undefined;
           }
         }
 
-        const beforeCleanup = fn();
-
-        if (typeof beforeCleanup == "function") {
-          if (!currentStore.beforeCleanups) {
-            currentStore.beforeCleanups = [];
-          }
-
-          currentStore.beforeCleanups[beforeEffectId] = beforeCleanup;
+        if (!currentStore.beforeCleanups) {
+          currentStore.beforeCleanups = [];
         }
+
+        currentStore.beforeCleanups[beforeEffectId] = fn();
       };
 
+      beforeEffect[0]();
+      beforeEffect[0] = null;
       beforeEffect[1] = guards;
     }
 
-    runBeforeCleanupsAndEffects(currentStore);
     currentStore.currentAdaptationIds.beforeEffect++;
   } else {
     throw new Error(
@@ -69,88 +112,16 @@ function beforeRenderEffectAdaptation(currentStore, fn, guards) {
   }
 }
 
-function runBeforeCleanupsAndEffects(store) {
-  if (store.beforeEffects) {
-    for (let [id, [beforeEffect, guards]] of store.beforeEffects.entries()) {
-      try {
-        if (typeof beforeEffect == "function") {
-          beforeEffect();
-        }
-      } finally {
-        store.beforeEffects[id][0] = undefined;
-      }
-    }
-  }
+const effectAndCleanupArray = [];
+
+function detonateEffectAndCleanupArray() {
+  const newEffectAndCleanupArray = [...effectAndCleanupArray];
+  effectAndCleanupArray.length = 0;
+  newEffectAndCleanupArray.forEach((effect) => effect());
 }
 
-function afterRenderEffectAdaptation(currentStore, fn, guards) {
-  if (currentStore && !currentStore.afterEffects) {
-    currentStore.afterEffects = [];
-    currentStore.currentAdaptationIds.afterEffect = 0;
-  }
-
-  if (currentStore) {
-    if (
-      !(
-        currentStore.currentAdaptationIds.afterEffect in
-        currentStore.afterEffects
-      )
-    ) {
-      currentStore.afterEffects[currentStore.currentAdaptationIds.afterEffect] =
-        [];
-    }
-
-    let afterEffectId = currentStore.currentAdaptationIds.afterEffect;
-    let afterEffect = currentStore.afterEffects[afterEffectId];
-
-    if (guardsChanged(afterEffect[1], guards)) {
-      afterEffect[0] = () => {
-        if (currentStore.afterCleanups) {
-          if (typeof currentStore.afterCleanups[afterEffectId] == "function") {
-            try {
-              currentStore.afterCleanups[afterEffectId]();
-            } finally {
-              currentStore.afterCleanups[afterEffectId] = undefined;
-            }
-          }
-        }
-
-        const afterCleanup = fn();
-
-        if (typeof afterCleanup == "function") {
-          if (!currentStore.afterCleanups) {
-            currentStore.afterCleanups = [];
-          }
-
-          currentStore.afterCleanups[afterEffectId] = afterCleanup;
-        }
-      };
-
-      afterEffect[1] = guards;
-    }
-
-    currentStore.currentAdaptationIds.afterEffect++;
-  } else {
-    throw new Error(
-      "adaptEffect() can only be used inside a Component or a Custom Adaptation."
-    );
-  }
-}
-
-function runAfterCleanupsAndEffects(storeId) {
-  const store = getStore(storeId);
-
-  if (store.afterEffects) {
-    for (let [id, [afterEffect, guards]] of store.afterEffects.entries()) {
-      try {
-        if (typeof afterEffect == "function") {
-          afterEffect();
-        }
-      } finally {
-        store.afterEffects[id][0] = undefined;
-      }
-    }
-  }
-}
-
-export { adaptEffect, runAfterCleanupsAndEffects, runBeforeCleanupsAndEffects };
+export {
+  adaptEffect,
+  runBeforeCleanupsAndEffects,
+  detonateEffectAndCleanupArray,
+};

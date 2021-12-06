@@ -1,25 +1,43 @@
-import { html, adaptEvents, adaptState, adaptEffect } from "nqtui";
+import {
+  html,
+  adaptEvents,
+  adaptUnifiedState,
+  adaptEffect,
+  adaptMemo,
+} from "nqtui";
 
-const Container = ({ $click, $noop }) => {
-  const [count, setCount] = adaptState(0);
-  const [count1, setCount1] = adaptState(0);
+const Container = ({ $click }) => {
+  const [state, setState] = adaptUnifiedState({ count: 0, firstTime: false });
 
-  const emitEvents = adaptEvents([$noop, "render", $click]);
+  const emitClick = adaptEvents([$click]);
   const emitRender = adaptEvents(["render"]);
 
-  const emitEvents1 = adaptEvents([
-    $noop,
-    "render",
-    "render",
-    $click,
-    "render",
-  ]);
+  const memo = adaptMemo(() => {
+    console.log("memo fired");
+    return 6;
+  }, [state.firstTime]);
+
+  adaptEffect(
+    () => {
+      console.log("effect fired");
+      setState({ count: 15 }, [() => emitClick(state.count)]);
+
+      return () => console.log(3);
+    },
+    [state.firstTime],
+    true
+  );
+
+  console.log("here");
 
   return html` <button @click=${emitRender}>Render</button>
-    <button @click=${() => emitEvents(count)}>EventButton</button>
-    <button @click=${() => emitEvents1(count1)}>EventButton1</button>
-    <button @click=${() => setCount(count + 5)}>${count}</button>
-    <button @click=${() => setCount1(count1 + 5)}>${count1}</button>`;
+    <button @click=${() => emitClick(state.count)}>Toggle</button>
+    <button @click=${() => setState({ count: state.count + 1 })}>
+      ${state.count}
+    </button>
+    <button @click=${() => setState({ firstTime: !state.firstTime })}>
+      ${state.firstTime}
+    </button>`;
 };
 
 export default Container;

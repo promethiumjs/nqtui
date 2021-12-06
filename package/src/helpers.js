@@ -1,5 +1,5 @@
 import { adaptStore, releaseCurrentStore } from "./adaptations/adaptations";
-import { runAfterCleanupsAndEffects } from "./adaptations/adaptEffect";
+import { detonateEffectAndCleanupArray } from "./adaptations/adaptEffect";
 
 let storeId = null;
 
@@ -17,13 +17,9 @@ function setRenderFunction(newRenderFunction) {
 
 function callRenderFunction() {
   adaptStore(storeId);
-
-  try {
-    renderFunction();
-    releaseCurrentStore();
-  } finally {
-    runAfterCleanupsAndEffects(storeId);
-  }
+  renderFunction();
+  releaseCurrentStore();
+  detonateEffectAndCleanupArray();
 }
 
 export { setRenderFunction, callRenderFunction, createStoreId };

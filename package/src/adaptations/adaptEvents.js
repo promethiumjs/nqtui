@@ -1,5 +1,4 @@
 import { getCurrentStore } from "./adaptations";
-import guardsChanged from "./guardsChanged";
 import { callRenderFunction } from "../helpers";
 
 function adaptEvents(eventArray) {
