@@ -26,7 +26,7 @@ function adaptState(initialStateValue) {
           effectArray.forEach((effect) => {
             if (effect.fn) {
               typeof effect.fn == "function"
-                ? effect.fn(effect.args)
+                ? effect.fn(...effect.args)
                 : effect.fn === "render" && callRenderFunction();
             } else {
               typeof effect == "function"
