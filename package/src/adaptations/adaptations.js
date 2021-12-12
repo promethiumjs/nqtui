@@ -1,4 +1,8 @@
+import { callRenderFunction } from "../helpers";
+import { detonateEffectAndCleanupArray } from "./adaptEffect";
+
 let currentStore;
+let currentStoreId;
 const stores = new WeakMap();
 
 function adaptStore(storeId) {
@@ -11,6 +15,8 @@ function adaptStore(storeId) {
   }
 
   currentStore = stores.get(storeId);
+  currentStoreId = storeId;
+
   Object.keys(currentStore.currentAdaptationIds).forEach(
     (id) => (currentStore.currentAdaptationIds[id] = 0)
   );
@@ -18,6 +24,10 @@ function adaptStore(storeId) {
 
 function getCurrentStore() {
   return currentStore;
+}
+
+function getCurrentStoreId() {
+  return currentStoreId;
 }
 
 function getStore(storeId) {
@@ -46,10 +56,20 @@ function detonateStore(storeId) {
   stores.delete(storeId);
 }
 
+function renderComponent(storeId) {
+  if (storeId.Component) {
+    storeId.setValue(storeId.Component());
+    releaseCurrentStore();
+    detonateEffectAndCleanupArray();
+  } else callRenderFunction();
+}
+
 export {
   adaptStore,
   releaseCurrentStore,
   detonateStore,
   getCurrentStore,
+  getCurrentStoreId,
   getStore,
+  renderComponent,
 };

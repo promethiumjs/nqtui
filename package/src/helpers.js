@@ -11,7 +11,6 @@ let renderFunction = null;
 
 function setRenderFunction(newRenderFunction) {
   renderFunction = newRenderFunction;
-
   createStoreId();
 }
 

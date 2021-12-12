@@ -2,56 +2,55 @@ import { AsyncDirective, directive } from "lit-html/async-directive.js";
 import { adaptStore, detonateStore } from "./adaptations/adaptations";
 
 class $$ extends AsyncDirective {
-  constructor(root) {
-    super(root);
+  constructor(part) {
+    super(part);
 
     this.initialization = true;
   }
 
-  initializeComponent(Component, props) {
+  initializeComponent(Component, props, parent) {
     if (Component.prototype && Component.prototype.isClassComponent) {
-      this.Component = new Component(props);
+      this.ClassComponent = new Component(props);
     }
 
-    if (this.Component && this.Component.initialized) {
-      this.Component.initialized();
-    }
+    this.Component = () => {
+      if (this.ClassComponent) {
+        this.ClassComponent.addProps(props);
+        this.ClassComponent.parent = parent;
+      }
+
+      adaptStore(this);
+
+      return this.ClassComponent
+        ? this.ClassComponent.construct({ parent, ...props })
+        : Component({ parent, ...props });
+    };
 
     this.initialization = false;
-
-    this.createStoreId();
-  }
-
-  createStoreId() {
-    this.storeId = {};
-  }
-
-  reconnected() {
-    this.initialization = true;
   }
 
   disconnected() {
-    detonateStore(this.storeId);
+    detonateStore(this);
   }
 
-  update(parent, [Component, props]) {
+  update(part, [Component, props]) {
     if (this.initialization) {
-      this.initializeComponent(Component, props);
+      this.initializeComponent(Component, props, part.parentNode);
     }
 
-    return this.render(Component, props, parent.parentNode);
+    return this.render(Component, props, part.parentNode);
   }
 
   render(Component, props, parent) {
-    if (this.Component) {
-      this.Component.addProps(props);
-      this.Component.parent = parent;
+    if (this.ClassComponent) {
+      this.ClassComponent.addProps(props);
+      this.ClassComponent.parent = parent;
     }
 
-    adaptStore(this.storeId);
+    adaptStore(this);
 
-    return this.Component
-      ? this.Component.construct({ parent, ...props })
+    return this.ClassComponent
+      ? this.ClassComponent.construct({ parent, ...props })
       : Component({ parent, ...props });
   }
 }

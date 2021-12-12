@@ -1,8 +1,12 @@
-import { callRenderFunction } from "../helpers";
-import { getCurrentStore } from "./adaptations";
+import {
+  getCurrentStore,
+  getCurrentStoreId,
+  renderComponent,
+} from "./adaptations";
 
 function adaptState(initialStateValue) {
   const currentStore = getCurrentStore();
+  const currentStoreId = getCurrentStoreId();
 
   if (currentStore && !currentStore.states) {
     currentStore.states = [];
@@ -27,15 +31,15 @@ function adaptState(initialStateValue) {
             if (effect.fn) {
               typeof effect.fn == "function"
                 ? effect.fn(...effect.args)
-                : effect.fn === "render" && callRenderFunction();
+                : effect.fn === "render" && renderComponent(currentStoreId);
             } else {
               typeof effect == "function"
                 ? effect()
-                : effect === "render" && callRenderFunction();
+                : effect === "render" && renderComponent(currentStoreId);
             }
           });
         } else {
-          callRenderFunction();
+          renderComponent(currentStoreId);
         }
       };
 
