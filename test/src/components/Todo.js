@@ -1,4 +1,11 @@
-import { html, $, adaptEvents, adaptState, adaptEffect } from "nqtui";
+import {
+  html,
+  $,
+  adaptEvents,
+  adaptState,
+  adaptEffect,
+  adaptInvocationEffect,
+} from "nqtui";
 import TodoList from "./TodoList";
 
 function Todo({ parent }) {
@@ -13,6 +20,10 @@ function Todo({ parent }) {
   adaptEffect(() => {
     console.log(parent.querySelector(".todo"));
   });
+
+  adaptInvocationEffect(() => {
+    setCount(5, () => console.log(5));
+  }, []);
 
   return html`<div>
     <div class="todo">Todo</div>

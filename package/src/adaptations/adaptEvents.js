@@ -11,7 +11,8 @@ function adaptEvents(eventArrayOrFuntion, guards) {
 
   if (currentStore) {
     return adaptMemo(() => {
-      return () => emitEvents(eventArrayOrFuntion, currentStoreId);
+      return (...eventParams) =>
+        emitEvents(eventParams, eventArrayOrFuntion, currentStoreId);
     }, guards);
   } else {
     throw new Error(
@@ -20,10 +21,10 @@ function adaptEvents(eventArrayOrFuntion, guards) {
   }
 }
 
-function emitEvents(eventArrayOrFuntion, currentStoreId) {
+function emitEvents(eventParams, eventArrayOrFuntion, currentStoreId) {
   if (eventArrayOrFuntion) {
     if (typeof eventArrayOrFuntion == "function") {
-      eventArrayOrFuntion();
+      eventArrayOrFuntion(...eventParams);
     } else {
       eventArrayOrFuntion.forEach((event) => {
         if (event.fn) {
@@ -32,7 +33,7 @@ function emitEvents(eventArrayOrFuntion, currentStoreId) {
             : event.fn === "render" && renderComponent(currentStoreId);
         } else {
           typeof event == "function"
-            ? event()
+            ? event(...eventParams)
             : event === "render" && renderComponent(currentStoreId);
         }
       });

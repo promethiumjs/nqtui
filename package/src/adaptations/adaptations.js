@@ -1,4 +1,3 @@
-import { callRenderFunction } from "../helpers";
 import { detonateEffectAndCleanupArray } from "./adaptEffect";
 
 let currentStore;
@@ -41,8 +40,14 @@ function releaseCurrentStore() {
 function detonateStore(storeId) {
   const currentStore = getStore(storeId);
 
-  if (currentStore.beforeCleanups) {
-    currentStore.beforeCleanups.forEach(
+  if (currentStore.instantCleanups) {
+    currentStore.instantCleanups.forEach(
+      (cleanup) => typeof cleanup == "function" && cleanup()
+    );
+  }
+
+  if (currentStore.invocationCleanups) {
+    currentStore.invocationCleanups.forEach(
       (cleanup) => typeof cleanup == "function" && cleanup()
     );
   }
@@ -61,7 +66,7 @@ function renderComponent(storeId) {
     storeId.setValue(storeId.Component());
     releaseCurrentStore();
     detonateEffectAndCleanupArray();
-  } else callRenderFunction();
+  }
 }
 
 export {

@@ -10,12 +10,16 @@ import { live } from "lit-html/directives/live.js";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { ref } from "lit-html/directives/ref.js";
 import { until } from "lit-html/directives/until.js";
-import { adaptStore } from "./adaptations/adaptations.js";
-import { releaseCurrentStore } from "./adaptations/adaptations.js";
+import {
+  adaptStore,
+  releaseCurrentStore,
+  detonateStore,
+} from "./adaptations/adaptations.js";
 import adaptState from "./adaptations/adaptState.js";
-import adaptUnifiedState from "./adaptations/adaptUnifiedState.js";
 import adaptRef from "./adaptations/adaptRef.js";
 import { adaptEffect } from "./adaptations/adaptEffect.js";
+import adaptInstantEffect from "./adaptations/adaptInstantEffect.js";
+import adaptInvocationEffect from "./adaptations/adaptInvocationEffect.js";
 import adaptMemo from "./adaptations/adaptMemo.js";
 import adaptEvents from "./adaptations/adaptEvents.js";
 
@@ -34,10 +38,12 @@ export {
   until,
   adaptStore as adapt,
   releaseCurrentStore as release,
+  detonateStore as detonate,
   adaptState,
-  adaptUnifiedState,
   adaptRef,
   adaptEffect,
+  adaptInstantEffect,
+  adaptInvocationEffect,
   adaptMemo,
   adaptEvents,
 };

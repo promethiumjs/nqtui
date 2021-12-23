@@ -1,6 +1,7 @@
-import { render } from "lit-html";
-import { setRenderFunction, callRenderFunction } from "./helpers";
-//@ts-check
+import { render, html } from "lit-html";
+import $ from "./$";
+import { releaseCurrentStore } from "./adaptations/adaptations";
+import { detonateEffectAndCleanupArray } from "./adaptations/adaptEffect";
 
 export default class Component {
   constructor(props) {
@@ -23,62 +24,21 @@ export default class Component {
     return NewClassComponent;
   }
 
-  static createClassComponentRoot(component) {
-    if (
-      typeof component.props.renderContainer === "string" ||
-      component.props.renderContainer instanceof String
-    )
-      component.props.renderContainer = document.querySelector(
-        component.props.renderContainer
-      );
-
-    let renderFunction = component.render.bind(
-      component,
-      component.props.renderContainer,
-      component.props.renderOptions
-    );
-
-    setRenderFunction(renderFunction);
-
-    callRenderFunction();
-
-    return component;
-  }
-
-  static createFunctionalComponentRoot(component, props) {
+  static createRoot(component, props) {
     if (
       typeof props.renderContainer === "string" ||
       props.renderContainer instanceof String
     )
       props.renderContainer = document.querySelector(props.renderContainer);
 
-    let renderFunction = () => {
-      render(component(props), props.renderContainer, props.renderOptions);
-    };
+    render(
+      (() => html` ${$(component, props)}`)(),
+      props.renderContainer,
+      props.renderOptions
+    );
 
-    setRenderFunction(renderFunction);
-
-    callRenderFunction();
-
-    return component;
-  }
-
-  static createRootFromObject(object, props) {
-    let component = Object.assign(new Component(props), object);
-
-    return Component.createClassComponentRoot(component);
-  }
-
-  static createRoot(ComponentType, props) {
-    if (ComponentType.prototype && ComponentType.prototype.isClassComponent) {
-      let component = new ComponentType(props);
-
-      return Component.createClassComponentRoot(component);
-    } else {
-      let component = ComponentType;
-
-      return Component.createFunctionalComponentRoot(component, props);
-    }
+    releaseCurrentStore();
+    detonateEffectAndCleanupArray();
   }
 
   addProps(props) {

@@ -1,13 +1,13 @@
 {
   "name": "nqtui",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "UI Library built on top of Lit-html",
   "source": "src/nqtui.js",
   "main": "nqtui.js",
   "type": "module",
   "scripts": {
     "watch": "parcel watch",
-    "build": "parcel build && terser nqtui.js --compress --mangle --output nqtui.js",
+    "build": "parcel build && terser nqtui.js --compress --output nqtui.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "jsdoc -c jsdoc.json"
   },

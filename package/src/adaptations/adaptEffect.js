@@ -1,17 +1,9 @@
 import { getCurrentStore } from "./adaptations";
 import guardsChanged from "./guardsChanged";
 
-function adaptEffect(fn, guards, beforeRender) {
+function adaptEffect(fn, guards) {
   const currentStore = getCurrentStore();
 
-  if (beforeRender) {
-    beforeRenderEffectAdaptation(currentStore, fn, guards);
-  } else {
-    afterRenderEffectAdaptation(currentStore, fn, guards);
-  }
-}
-
-function afterRenderEffectAdaptation(currentStore, fn, guards) {
   if (currentStore && !currentStore.afterEffects) {
     currentStore.afterEffects = [];
     currentStore.currentAdaptationIds.afterEffect = 0;
@@ -60,68 +52,14 @@ function afterRenderEffectAdaptation(currentStore, fn, guards) {
   }
 }
 
-function beforeRenderEffectAdaptation(currentStore, fn, guards) {
-  if (currentStore && !currentStore.beforeEffects) {
-    currentStore.beforeEffects = [];
-    currentStore.currentAdaptationIds.beforeEffect = 0;
-  }
-
-  if (currentStore) {
-    if (
-      !(
-        currentStore.currentAdaptationIds.beforeEffect in
-        currentStore.beforeEffects
-      )
-    ) {
-      currentStore.beforeEffects[
-        currentStore.currentAdaptationIds.beforeEffect
-      ] = [];
-    }
-
-    let beforeEffectId = currentStore.currentAdaptationIds.beforeEffect;
-    let beforeEffect = currentStore.beforeEffects[beforeEffectId];
-
-    if (guardsChanged(beforeEffect[1], guards)) {
-      beforeEffect[0] = () => {
-        if (currentStore.beforeCleanups) {
-          if (
-            typeof currentStore.beforeCleanups[beforeEffectId] == "function"
-          ) {
-            currentStore.beforeCleanups[beforeEffectId]();
-            currentStore.beforeCleanups[beforeEffectId] = undefined;
-          }
-        }
-
-        if (!currentStore.beforeCleanups) {
-          currentStore.beforeCleanups = [];
-        }
-
-        currentStore.beforeCleanups[beforeEffectId] = fn();
-      };
-
-      beforeEffect[0]();
-      beforeEffect[0] = null;
-      beforeEffect[1] = guards;
-    }
-
-    currentStore.currentAdaptationIds.beforeEffect++;
-  } else {
-    throw new Error(
-      "adaptEffect() can only be used inside a Component or a Custom Adaptation."
-    );
-  }
-}
-
 const effectAndCleanupArray = [];
 
 function detonateEffectAndCleanupArray() {
-  const newEffectAndCleanupArray = [...effectAndCleanupArray];
-  effectAndCleanupArray.length = 0;
-  newEffectAndCleanupArray.forEach((effect) => effect());
+  setTimeout(() => {
+    const newEffectAndCleanupArray = [...effectAndCleanupArray];
+    effectAndCleanupArray.length = 0;
+    newEffectAndCleanupArray.forEach((effect) => effect());
+  });
 }
 
-export {
-  adaptEffect,
-  runBeforeCleanupsAndEffects,
-  detonateEffectAndCleanupArray,
-};
+export { adaptEffect, detonateEffectAndCleanupArray };
