@@ -1,10 +1,11 @@
-import { detonateEffectAndCleanupArray } from "./adaptEffect";
-
+//use WeakMap to store adaptation stores for more memory efficiency and
+//potentially faster access time for stores.
+const stores = new WeakMap();
 let currentStore;
 let currentStoreId;
-const stores = new WeakMap();
 
 function adaptStore(storeId) {
+  //create adaptation store if it doesn't exist and add up.
   if (!stores.has(storeId)) {
     const store = {
       currentAdaptationIds: {},
@@ -13,9 +14,12 @@ function adaptStore(storeId) {
     stores.set(storeId, store);
   }
 
+  //prepare adaptation store and its id for access.
   currentStore = stores.get(storeId);
   currentStoreId = storeId;
 
+  //reset adaptation ids to enable adaptation data to be accessed in the
+  //right order.
   Object.keys(currentStore.currentAdaptationIds).forEach(
     (id) => (currentStore.currentAdaptationIds[id] = 0)
   );
@@ -35,8 +39,10 @@ function getStore(storeId) {
 
 function releaseCurrentStore() {
   currentStore = null;
+  currentStoreId = null;
 }
 
+//call all pending store cleanups and destroy store.
 function detonateStore(storeId) {
   const currentStore = getStore(storeId);
 
@@ -52,8 +58,20 @@ function detonateStore(storeId) {
     );
   }
 
-  if (currentStore.afterCleanups) {
-    currentStore.afterCleanups.forEach(
+  if (currentStore.asyncCleanups) {
+    currentStore.asyncCleanups.forEach(
+      (cleanup) => typeof cleanup == "function" && cleanup()
+    );
+  }
+
+  if (currentStore.particleCleanups) {
+    currentStore.particleCleanups.forEach(
+      (cleanup) => typeof cleanup == "function" && cleanup()
+    );
+  }
+
+  if (currentStore.derivativeCleanups) {
+    currentStore.derivativeCleanups.forEach(
       (cleanup) => typeof cleanup == "function" && cleanup()
     );
   }
@@ -61,12 +79,24 @@ function detonateStore(storeId) {
   stores.delete(storeId);
 }
 
+//render associated component when called with store ids of components.
+//when called with store ids of custom adaptations and other non-components,
+//call their update function.
 function renderComponent(storeId) {
   if (storeId.Component) {
-    storeId.setValue(storeId.Component());
+    storeId.setValue(storeId.Component(storeId.oldProps));
     releaseCurrentStore();
-    detonateEffectAndCleanupArray();
   }
+}
+
+let preventMultipleRenders = false;
+
+function getPreventMultipleRenders() {
+  return preventMultipleRenders;
+}
+
+function setPreventMultipleRenders(boolean) {
+  preventMultipleRenders = boolean;
 }
 
 export {
@@ -77,4 +107,6 @@ export {
   getCurrentStoreId,
   getStore,
   renderComponent,
+  getPreventMultipleRenders,
+  setPreventMultipleRenders,
 };

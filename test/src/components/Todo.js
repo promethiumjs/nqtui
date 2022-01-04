@@ -1,40 +1,67 @@
 import {
   html,
   $,
-  adaptEvents,
+  adaptCallback,
   adaptState,
   adaptEffect,
+  adaptInstantEffect,
   adaptInvocationEffect,
 } from "nqtui";
+import {
+  adaptTrigger,
+  adaptEntity,
+  adaptParticle,
+  adaptDerivative,
+} from "nqtx";
 import TodoList from "./TodoList";
 
-function Todo({ parent }) {
-  const [count, setCount] = adaptState(0);
-  const [beat, setBeat] = adaptState(0);
-  const [todoList, setTodoList] = adaptState(true);
+function Todo({ count: count2, parent }) {
+  const trigger = adaptTrigger("firstTrigger");
+  const entity = adaptEntity();
 
-  const event = adaptEvents(() => {
-    console.log(beat + count);
-  }, [count]);
+  adaptInstantEffect(() => {
+    const trigger = entity.trigger({
+      id: "secondTrigger",
+    });
 
-  adaptEffect(() => {
-    console.log(parent.querySelector(".todo"));
-  });
+    const unsub = trigger.subscribe(() => {
+      console.log("secondTrigger");
+    });
 
-  adaptInvocationEffect(() => {
-    setCount(5, () => console.log(5));
+    return () => {
+      unsub();
+      trigger.detonate();
+    };
   }, []);
 
-  return html`<div>
-    <div class="todo">Todo</div>
-    <button @click=${() => setCount(count + 1)}>
-      IncrementCount: ${count}
+  adaptInstantEffect(() => {
+    const derivative = entity.derivative({
+      id: "derivedCount1",
+      transform: ({ get, payload }) => {
+        const animal = get("count");
+
+        return animal + payload.jump;
+      },
+    });
+
+    return () => derivative.detonate();
+  }, []);
+
+  const secondTrigger = adaptTrigger("secondTrigger");
+  const particleCount = adaptParticle("count");
+
+  adaptEffect(() => {
+    particleCount.subscribe(() => console.log("particle subscription here"));
+  }, []);
+
+  console.log("Todo");
+  return html` <div>${count2}</div>
+    <button @click=${() => particleCount.mutate("inc", { jump: 10 })}>
+      particleCount: ${particleCount.state}
     </button>
-    <button @click=${() => setBeat(beat + 1)}>IncrementBeat: ${beat}</button>
-    <button @click=${event}>EmitEvent</button>
-    <button @click=${() => setTodoList(!todoList)}>ToggleTodoList</button>
-    ${todoList ? $(TodoList) : ""}
-  </div>`;
+    <button @click=${trigger.invoke}>firstTrigger</button>
+    <button @click=${secondTrigger.invoke}>secondTrigger</button>
+    <div>${$(TodoList)}</div>`;
 }
 
 export default Todo;

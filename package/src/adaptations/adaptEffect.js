@@ -4,47 +4,47 @@ import guardsChanged from "./guardsChanged";
 function adaptEffect(fn, guards) {
   const currentStore = getCurrentStore();
 
-  if (currentStore && !currentStore.afterEffects) {
-    currentStore.afterEffects = [];
-    currentStore.currentAdaptationIds.afterEffect = 0;
+  if (currentStore && !currentStore.asyncEffects) {
+    currentStore.asyncEffects = [];
+    currentStore.currentAdaptationIds.asyncEffect = 0;
   }
 
   if (currentStore) {
     if (
       !(
-        currentStore.currentAdaptationIds.afterEffect in
-        currentStore.afterEffects
+        currentStore.currentAdaptationIds.asyncEffect in
+        currentStore.asyncEffects
       )
     ) {
-      currentStore.afterEffects[currentStore.currentAdaptationIds.afterEffect] =
+      currentStore.asyncEffects[currentStore.currentAdaptationIds.asyncEffect] =
         [];
     }
 
-    let afterEffectId = currentStore.currentAdaptationIds.afterEffect;
-    let afterEffect = currentStore.afterEffects[afterEffectId];
+    let asyncEffectId = currentStore.currentAdaptationIds.asyncEffect;
+    let asyncEffect = currentStore.asyncEffects[asyncEffectId];
 
-    if (guardsChanged(afterEffect[1], guards)) {
-      afterEffect[0] = () => {
-        if (currentStore.afterCleanups) {
-          if (typeof currentStore.afterCleanups[afterEffectId] == "function") {
-            currentStore.afterCleanups[afterEffectId]();
-            currentStore.afterCleanups[afterEffectId] = undefined;
+    if (guardsChanged(asyncEffect[1], guards)) {
+      asyncEffect[0] = () => {
+        if (currentStore.asyncCleanups) {
+          if (typeof currentStore.asyncCleanups[asyncEffectId] == "function") {
+            currentStore.asyncCleanups[asyncEffectId]();
+            currentStore.asyncCleanups[asyncEffectId] = undefined;
           }
         }
 
-        if (!currentStore.afterCleanups) {
-          currentStore.afterCleanups = [];
+        if (!currentStore.asyncCleanups) {
+          currentStore.asyncCleanups = [];
         }
 
-        currentStore.afterCleanups[afterEffectId] = fn();
+        currentStore.asyncCleanups[asyncEffectId] = fn();
       };
 
-      effectAndCleanupArray.push(afterEffect[0]);
-      afterEffect[0] = null;
-      afterEffect[1] = guards;
+      addAsyncEffect(asyncEffect[0]);
+      asyncEffect[0] = null;
+      asyncEffect[1] = guards;
     }
 
-    currentStore.currentAdaptationIds.afterEffect++;
+    currentStore.currentAdaptationIds.asyncEffect++;
   } else {
     throw new Error(
       "adaptEffect() can only be used inside a Component or a Custom Adaptation."
@@ -52,14 +52,18 @@ function adaptEffect(fn, guards) {
   }
 }
 
-const effectAndCleanupArray = [];
+const asyncEffectAndCleanupArray = [];
 
-function detonateEffectAndCleanupArray() {
-  setTimeout(() => {
-    const newEffectAndCleanupArray = [...effectAndCleanupArray];
-    effectAndCleanupArray.length = 0;
-    newEffectAndCleanupArray.forEach((effect) => effect());
-  });
+function addAsyncEffect(effect) {
+  asyncEffectAndCleanupArray.push(effect);
+
+  if (asyncEffectAndCleanupArray.length === 1) {
+    setTimeout(() => {
+      const newEffectAndCleanupArray = [...asyncEffectAndCleanupArray];
+      asyncEffectAndCleanupArray.length = 0;
+      newEffectAndCleanupArray.forEach((effect) => effect());
+    });
+  }
 }
 
-export { adaptEffect, detonateEffectAndCleanupArray };
+export default adaptEffect;

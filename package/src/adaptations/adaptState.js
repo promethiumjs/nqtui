@@ -4,6 +4,28 @@ import {
   renderComponent,
 } from "./adaptations";
 
+function commonSetStateFunctionality(effectArrayOrFunction, currentStoreId) {
+  if (effectArrayOrFunction) {
+    if (typeof effectArrayOrFunction == "function") {
+      effectArrayOrFunction();
+    } else {
+      effectArrayOrFunction.forEach((effect) => {
+        if (effect.fn) {
+          typeof effect.fn == "function"
+            ? effect.fn(...effect.args)
+            : effect.fn === "render" && renderComponent(currentStoreId);
+        } else {
+          typeof effect == "function"
+            ? effect()
+            : effect === "render" && renderComponent(currentStoreId);
+        }
+      });
+    }
+  } else {
+    renderComponent(currentStoreId);
+  }
+}
+
 function adaptState(initialStateValue, mode) {
   const currentStore = getCurrentStore();
   const currentStoreId = getCurrentStoreId();
@@ -20,28 +42,6 @@ function adaptState(initialStateValue, mode) {
           ? initialStateValue()
           : initialStateValue;
 
-      const commonSetStateFunctionality = (effectArrayOrFunction) => {
-        if (effectArrayOrFunction) {
-          if (typeof effectArrayOrFunction == "function") {
-            effectArrayOrFunction();
-          } else {
-            effectArrayOrFunction.forEach((effect) => {
-              if (effect.fn) {
-                typeof effect.fn == "function"
-                  ? effect.fn(...effect.args)
-                  : effect.fn === "render" && renderComponent(currentStoreId);
-              } else {
-                typeof effect == "function"
-                  ? effect()
-                  : effect === "render" && renderComponent(currentStoreId);
-              }
-            });
-          }
-        } else {
-          renderComponent(currentStoreId);
-        }
-      };
-
       let setStateFunction;
       if (!mode) {
         setStateFunction = (newStateValue, effectArray) => {
@@ -50,7 +50,7 @@ function adaptState(initialStateValue, mode) {
               ? newStateValue(state[0])
               : newStateValue;
 
-          commonSetStateFunctionality(effectArray);
+          commonSetStateFunctionality(effectArray, currentStoreId);
         };
       } else if (mode === "getter") {
         setStateFunction = (newStateValue, effectArray) => {
@@ -59,13 +59,13 @@ function adaptState(initialStateValue, mode) {
               ? newStateValue(state[2])
               : newStateValue;
 
-          commonSetStateFunctionality(effectArray);
+          commonSetStateFunctionality(effectArray, currentStoreId);
         };
       } else if (mode === "unified") {
         setStateFunction = (newStateValue, effectArray) => {
           Object.assign(state[0], newStateValue);
 
-          commonSetStateFunctionality(effectArray);
+          commonSetStateFunctionality(effectArray, currentStoreId);
         };
       }
 

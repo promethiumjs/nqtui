@@ -1,10 +1,17 @@
 import { render, html } from "lit-html";
 import $ from "./$";
-import { releaseCurrentStore } from "./adaptations/adaptations";
-import { detonateEffectAndCleanupArray } from "./adaptations/adaptEffect";
+import {
+  releaseCurrentStore,
+  getCurrentStore,
+  getCurrentStoreId,
+  renderComponent,
+  getPreventMultipleRenders,
+  setPreventMultipleRenders,
+} from "./adaptations/adaptations";
 
 export default class Component {
   constructor(props) {
+    //initialize component with props.
     this.props = props || {};
   }
 
@@ -25,20 +32,40 @@ export default class Component {
   }
 
   static createRoot(component, props) {
+    //check whether or not "renderContainer" is a string and handle it
+    //accordingly.
     if (
       typeof props.renderContainer === "string" ||
       props.renderContainer instanceof String
     )
       props.renderContainer = document.querySelector(props.renderContainer);
 
-    render(
-      (() => html` ${$(component, props)}`)(),
-      props.renderContainer,
-      props.renderOptions
-    );
+    const renderComponent = () =>
+      render(
+        (() => html` ${$(component, props)}`)(),
+        props.renderContainer,
+        props.renderOptions
+      );
 
+    //queue microtask to render the component to enable all extensions to run first.
+    queueMicrotask(renderComponent);
+
+    //release the reference to the current store.
     releaseCurrentStore();
-    detonateEffectAndCleanupArray();
+
+    //return "renderComponet" function to allow re-rendering of whole root
+    //component tree.
+    return renderComponent;
+  }
+
+  static use(extension) {
+    extension.addAdaptationMethods({
+      getCurrentStore,
+      getCurrentStoreId,
+      renderComponent,
+      getPreventMultipleRenders,
+      setPreventMultipleRenders,
+    });
   }
 
   addProps(props) {

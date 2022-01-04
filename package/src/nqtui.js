@@ -17,11 +17,12 @@ import {
 } from "./adaptations/adaptations.js";
 import adaptState from "./adaptations/adaptState.js";
 import adaptRef from "./adaptations/adaptRef.js";
-import { adaptEffect } from "./adaptations/adaptEffect.js";
+import adaptEffect from "./adaptations/adaptEffect.js";
 import adaptInstantEffect from "./adaptations/adaptInstantEffect.js";
 import adaptInvocationEffect from "./adaptations/adaptInvocationEffect.js";
 import adaptMemo from "./adaptations/adaptMemo.js";
-import adaptEvents from "./adaptations/adaptEvents.js";
+import adaptCallback from "./adaptations/adaptCallback.js";
+import adaptFunction from "./adaptations/adaptFunction.js";
 
 export {
   Component,
@@ -45,5 +46,6 @@ export {
   adaptInstantEffect,
   adaptInvocationEffect,
   adaptMemo,
-  adaptEvents,
+  adaptCallback,
+  adaptFunction,
 };
