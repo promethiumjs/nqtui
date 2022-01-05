@@ -26,7 +26,9 @@ function App() {
   const derivedCount = adaptDerivative("derivedCount1");
 
   adaptEffect(() => {
-    derivedCount.subscribe(() => console.log("derivative subscription here"));
+    derivedCount.subscribe((newState) =>
+      console.log("derivative subscription here", newState)
+    );
   }, [derivedCount]);
 
   adaptEffect(() => {

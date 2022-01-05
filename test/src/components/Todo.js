@@ -51,7 +51,16 @@ function Todo({ count: count2, parent }) {
   const particleCount = adaptParticle("count");
 
   adaptEffect(() => {
-    particleCount.subscribe(() => console.log("particle subscription here"));
+    const pstates = entity.getParticleStates();
+    const dstates = entity.getDerivativeStates();
+
+    console.log(pstates, dstates);
+  }, [particleCount.state]);
+
+  adaptEffect(() => {
+    particleCount.subscribe((newState) =>
+      console.log("particle subscription here", newState)
+    );
   }, []);
 
   console.log("Todo");

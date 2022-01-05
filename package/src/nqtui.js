@@ -9,7 +9,10 @@ import { repeat } from "lit-html/directives/repeat.js";
 import { live } from "lit-html/directives/live.js";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { ref } from "lit-html/directives/ref.js";
+import { createRef } from "lit-html/directives/ref.js";
 import { until } from "lit-html/directives/until.js";
+import { asyncAppend } from "lit-html/directives/async-append.js";
+import { asyncReplace } from "lit-html/directives/async-replace.js";
 import {
   adaptStore,
   releaseCurrentStore,
@@ -36,7 +39,10 @@ export {
   live,
   ifDefined,
   ref,
+  createRef,
   until,
+  asyncAppend,
+  asyncReplace,
   adaptStore as adapt,
   releaseCurrentStore as release,
   detonateStore as detonate,
