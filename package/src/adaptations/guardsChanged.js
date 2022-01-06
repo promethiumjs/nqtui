@@ -7,8 +7,9 @@ function guardsChanged(guards1, guards2) {
     return true;
   }
 
-  for (let [id, guard] of guards1.entries()) {
-    if (!(guard === guards2[id])) {
+  let guardLength = guards1.length;
+  for (let i = 0; i < guardLength; i++) {
+    if (!(guards1[i] === guards2[i])) {
       return true;
     }
   }

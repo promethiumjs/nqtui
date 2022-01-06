@@ -1,13 +1,13 @@
 import adaptMemo from "./adaptMemo";
 import { getCurrentStore } from "./adaptations";
 
-function adaptCallback(fn, guards) {
+function adaptCallback(fn, inputGuards) {
   const currentStore = getCurrentStore();
 
   if (currentStore) {
     return adaptMemo(() => {
       return fn;
-    }, guards);
+    }, inputGuards);
   } else {
     throw new Error(
       "adaptCallback() can only be used inside a Component or a Custom Adaptation."

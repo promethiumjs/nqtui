@@ -1,9 +1,17 @@
-import { render } from "lit-html";
-import { setRenderFunction, callRenderFunction } from "./helpers";
-//@ts-check
+import { render, html } from "lit-html";
+import $ from "./$";
+import {
+  releaseCurrentStore,
+  getCurrentStore,
+  getCurrentStoreId,
+  renderComponent,
+  getPreventMultipleRenders,
+  setPreventMultipleRenders,
+} from "./adaptations/adaptations";
 
 export default class Component {
   constructor(props) {
+    //initialize component with props.
     this.props = props || {};
   }
 
@@ -23,62 +31,41 @@ export default class Component {
     return NewClassComponent;
   }
 
-  static createClassComponentRoot(component) {
-    if (
-      typeof component.props.renderContainer === "string" ||
-      component.props.renderContainer instanceof String
-    )
-      component.props.renderContainer = document.querySelector(
-        component.props.renderContainer
-      );
-
-    let renderFunction = component.render.bind(
-      component,
-      component.props.renderContainer,
-      component.props.renderOptions
-    );
-
-    setRenderFunction(renderFunction);
-
-    callRenderFunction();
-
-    return component;
-  }
-
-  static createFunctionalComponentRoot(component, props) {
+  static createRoot(component, props) {
+    //check whether or not "renderContainer" is a string and handle it
+    //accordingly.
     if (
       typeof props.renderContainer === "string" ||
       props.renderContainer instanceof String
     )
       props.renderContainer = document.querySelector(props.renderContainer);
 
-    let renderFunction = () => {
-      render(component(props), props.renderContainer, props.renderOptions);
-    };
+    const renderComponent = () =>
+      render(
+        (() => html` ${$(component, props)}`)(),
+        props.renderContainer,
+        props.renderOptions
+      );
 
-    setRenderFunction(renderFunction);
+    //queue microtask to render the component to enable all extensions to run first.
+    queueMicrotask(renderComponent);
 
-    callRenderFunction();
+    //release the reference to the current store.
+    releaseCurrentStore();
 
-    return component;
+    //return "renderComponet" function to allow re-rendering of whole root
+    //component tree.
+    return renderComponent;
   }
 
-  static createRootFromObject(object, props) {
-    let component = Object.assign(new Component(props), object);
-
-    return Component.createClassComponentRoot(component);
-  }
-
-  static createRoot(ComponentType, props) {
-    if (ComponentType.prototype && ComponentType.prototype.isClassComponent) {
-      let component = new ComponentType(props);
-
-      return Component.createClassComponentRoot(component);
-    } else {
-      let component = ComponentType;
-
-      return Component.createFunctionalComponentRoot(component, props);
-    }
+  static use(extension) {
+    extension.addAdaptationMethods({
+      getCurrentStore,
+      getCurrentStoreId,
+      renderComponent,
+      getPreventMultipleRenders,
+      setPreventMultipleRenders,
+    });
   }
 
   addProps(props) {

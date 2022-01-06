@@ -21,11 +21,8 @@ function adaptMemo(fn, guards) {
     let memo = currentStore.memos[currentStore.currentAdaptationIds.memo];
 
     if (guardsChanged(memo[1], guards)) {
-      try {
-        memo[0] = fn();
-      } finally {
-        memo[1] = guards;
-      }
+      memo[0] = fn();
+      memo[1] = guards;
     }
 
     currentStore.currentAdaptationIds.memo++;

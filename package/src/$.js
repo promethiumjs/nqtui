@@ -1,63 +1,81 @@
 import { AsyncDirective, directive } from "lit-html/async-directive.js";
-import { adaptStore, detonateStore } from "./adaptations/adaptations";
-import { runCleanupsAndEffects } from "./adaptations/adaptEffect";
+import {
+  adaptStore,
+  detonateStore,
+  getPreventMultipleRenders,
+} from "./adaptations/adaptations";
+import { noChange } from "lit-html";
 
 class $$ extends AsyncDirective {
-  constructor(root) {
-    super(root);
+  constructor(part) {
+    super(part);
 
+    //boolean flag to enable initialization of the
+    //component in the update method.
     this.initialization = true;
   }
 
-  initializeComponent(Component, props) {
+  initializeComponent(Component, props, parent) {
+    //check if component is class component and add an instance of it to the directive
+    //instance as its associated component.
     if (Component.prototype && Component.prototype.isClassComponent) {
-      this.Component = new Component(props);
+      this.ClassComponent = new Component(props);
     }
 
-    if (this.Component && this.Component.initialized) {
-      this.Component.initialized();
-    }
+    this.Component = (props) => {
+      if (this.ClassComponent) {
+        this.ClassComponent.addProps(props);
+        this.ClassComponent.parent = parent;
+      }
 
+      //prepare adaptation store for component.
+      adaptStore(this);
+
+      //check "preventMultipleRenders" flag to prevent multiple redundant
+      //re-rendering of components.
+      //return component's return value to be rendered.
+      if (!getPreventMultipleRenders())
+        return this.ClassComponent
+          ? this.ClassComponent.construct({ parent, ...props })
+          : Component({ parent, ...props });
+      else if (this.changed) {
+        this.changed = false;
+        queueMicrotask(() => (this.changed = true));
+
+        return this.ClassComponent
+          ? this.ClassComponent.construct({ parent, ...props })
+          : Component({ parent, ...props });
+      } else {
+        return noChange;
+      }
+    };
+
+    //initialize "changed" flag as true.
+    this.changed = true;
+    //prevent re-initialization of component on subsequent renders after
+    //initialization.
     this.initialization = false;
-
-    this.createStoreId();
-  }
-
-  createStoreId() {
-    this.storeId = {};
-  }
-
-  reconnected() {
-    this.initialization = true;
   }
 
   disconnected() {
-    detonateStore(this.storeId);
+    //call pending cleanups and destroy component adaptation store.
+    detonateStore(this);
   }
 
-  update(parent, [Component, props]) {
+  update(part, [Component, props]) {
+    //initialize component on first render
     if (this.initialization) {
-      this.initializeComponent(Component, props);
+      this.initializeComponent(Component, props, part.parentNode);
     }
 
-    return this.render(Component, props, parent.parentNode);
+    //keep old props to enable reuse when updating the component independently of it's
+    //parent.
+    this.oldProps = props;
+    return this.render(Component, props, part.parentNode);
   }
 
   render(Component, props, parent) {
-    if (this.Component) {
-      this.Component.addProps(props);
-      this.Component.parent = parent;
-    }
-
-    adaptStore(this.storeId);
-
-    try {
-      return this.Component
-        ? this.Component.construct({ parent, ...props })
-        : Component({ parent, ...props });
-    } finally {
-      runCleanupsAndEffects(this.storeId);
-    }
+    return this.Component(props);
   }
 }
 
