@@ -1,6 +1,6 @@
 {
   "name": "nqtui",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "UI library built on top of lit-html",
   "source": "src/nqtui.js",
   "main": "nqtui.js",

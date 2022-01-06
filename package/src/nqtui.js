@@ -18,7 +18,9 @@ import {
   releaseCurrentStore,
   detonateStore,
 } from "./adaptations/adaptations.js";
+import adaptation from "./adaptations/adaptation.js";
 import adaptState from "./adaptations/adaptState.js";
+import adaptGetState from "./adaptations/adaptGetState.js";
 import adaptRef from "./adaptations/adaptRef.js";
 import adaptEffect from "./adaptations/adaptEffect.js";
 import adaptInstantEffect from "./adaptations/adaptInstantEffect.js";
@@ -27,8 +29,8 @@ import adaptMemo from "./adaptations/adaptMemo.js";
 import adaptCallback from "./adaptations/adaptCallback.js";
 import adaptFunction from "./adaptations/adaptFunction.js";
 
+export default Component;
 export {
-  Component,
   $,
   html,
   classMap,
@@ -46,7 +48,9 @@ export {
   adaptStore as adapt,
   releaseCurrentStore as release,
   detonateStore as detonate,
+  adaptation,
   adaptState,
+  adaptGetState,
   adaptRef,
   adaptEffect,
   adaptInstantEffect,

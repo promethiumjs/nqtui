@@ -86,6 +86,8 @@ function renderComponent(storeId) {
   if (storeId.Component) {
     storeId.setValue(storeId.Component(storeId.oldProps));
     releaseCurrentStore();
+  } else if (storeId.call) {
+    storeId.call();
   }
 }
 

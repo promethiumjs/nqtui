@@ -1,7 +1,7 @@
 import { getCurrentStore, getCurrentStoreId } from "./adaptations";
 import commonSetStateFunctionality from "./commonSetStateFunctionality";
 
-function adaptState(initialStateValue) {
+function adaptGetState(initialStateValue) {
   const currentStore = getCurrentStore();
   const currentStoreId = getCurrentStoreId();
 
@@ -18,15 +18,15 @@ function adaptState(initialStateValue) {
           : initialStateValue;
 
       const setStateFunction = (newStateValue, effectArray) => {
-        state[0] =
+        state[2] =
           typeof newStateValue == "function"
-            ? newStateValue(state[0])
+            ? newStateValue(state[2])
             : newStateValue;
 
         commonSetStateFunctionality(effectArray, currentStoreId);
       };
 
-      const state = [stateValue, setStateFunction];
+      const state = [() => state[2], setStateFunction, stateValue];
 
       currentStore.states[currentStore.currentAdaptationIds.state] = state;
     }
@@ -34,9 +34,9 @@ function adaptState(initialStateValue) {
     return currentStore.states[currentStore.currentAdaptationIds.state++];
   } else {
     throw new Error(
-      "adaptState() can only be used inside a Component or a Custom Adaptation."
+      "adaptGetState() can only be used inside a Component or a Custom Adaptation."
     );
   }
 }
 
-export default adaptState;
+export default adaptGetState;

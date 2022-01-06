@@ -51,7 +51,8 @@ function emitEvent(
       eventArrayOrFuntion.forEach((event) => {
         typeof event == "function"
           ? event(...setupEventArgs, ...invocationEventArgs)
-          : event === "render" && renderComponent(currentStoreId);
+          : (event === "render" || event === "update") &&
+            renderComponent(currentStoreId);
       });
   } else {
     renderComponent(currentStoreId);
