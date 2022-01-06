@@ -1,5 +1,4 @@
-import { Component } from "nqtui";
-import { Entity } from "nqtx";
+import Component from "nqtui";
 import App from "./src/components/App";
 import entity from "./state";
 import "./index.css";

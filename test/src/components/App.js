@@ -5,53 +5,49 @@ import {
   adaptState,
   adaptEffect,
   adaptInstantEffect,
-  adaptInvocationEffect,
-  adaptRef,
 } from "nqtui";
-import {
-  adaptTrigger,
-  adaptEntity,
-  adaptParticle,
-  adaptDerivative,
-} from "nqtx";
+import { adaptEntity, adaptDerivative } from "nqtx";
 import Todo from "./Todo";
 
 function App() {
   const [count, setCount] = adaptState(0);
   const [showTodo, setShowTodo] = adaptState(true);
-  const firstTrigger = adaptTrigger("firstTrigger");
   const entity = adaptEntity();
-  const render = adaptFunction();
+  const render = adaptFunction(["update"]);
 
-  const derivedCount = adaptDerivative("derivedCount1");
+  adaptInstantEffect(() => {
+    const derivative = entity.derivative({
+      id: "derivedCount1",
+      transform: ({ get, payload }) => {
+        const animal = get("count");
+
+        if (animal) return animal + payload.jump;
+        else return payload.jump;
+      },
+    });
+
+    return () => derivative.detonate();
+  }, []);
+
+  const [, $derivedCount] = adaptDerivative("derivedCount1");
 
   adaptEffect(() => {
-    derivedCount.subscribe((newState) =>
+    $derivedCount.subscribe((newState) =>
       console.log("derivative subscription here", newState)
     );
-  }, [derivedCount]);
-
-  adaptEffect(() => {
-    const unsub = firstTrigger.subscribe(event1);
-
-    return () => unsub();
-  }, [count]);
-
-  const secondTrigger = adaptTrigger("secondTrigger");
+  }, [$derivedCount]);
 
   console.log("App");
-  const event1 = () => {
-    console.log("event1");
-    setCount(count + 1);
-    console.log(count);
-  };
 
   return html`
-    <div>derivedCount: ${derivedCount.getState({ jump: 3 })}</div>
-    <button @click=${firstTrigger.invoke}>firstTrigger</button>
+    <div>derivedCount: ${$derivedCount.get({ jump: 3 })}</div>
     <button @click=${render}>Render</button>
-    <button @click=${secondTrigger.invoke}>secondTrigger</button>
-    <button @click=${() => setShowTodo(!showTodo)}>ToggleTodo</button>
+    <button @click=${() => setCount(count + 1)}>
+      Increment Count : ${count}
+    </button>
+    <button @click=${() => setShowTodo(!showTodo, ["render"])}>
+      ToggleTodo
+    </button>
     <div>App</div>
     ${showTodo ? $(Todo, { count }) : ""}
   `;

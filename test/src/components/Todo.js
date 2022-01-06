@@ -1,76 +1,39 @@
-import {
-  html,
-  $,
-  adaptCallback,
-  adaptState,
-  adaptEffect,
-  adaptInstantEffect,
-  adaptInvocationEffect,
-} from "nqtui";
-import {
-  adaptTrigger,
-  adaptEntity,
-  adaptParticle,
-  adaptDerivative,
-} from "nqtx";
+import { html, $, adaptEffect, adaptInstantEffect, adaptState } from "nqtui";
+import { adaptEntity, adaptParticle } from "nqtx";
 import TodoList from "./TodoList";
 
 function Todo({ count: count2, parent }) {
-  const trigger = adaptTrigger("firstTrigger");
   const entity = adaptEntity();
+  const [showList, setShowList] = adaptState(true);
 
   adaptInstantEffect(() => {
-    const trigger = entity.trigger({
-      id: "secondTrigger",
-    });
-
-    const unsub = trigger.subscribe(() => {
-      console.log("secondTrigger");
-    });
-
-    return () => {
-      unsub();
-      trigger.detonate();
-    };
-  }, []);
-
-  adaptInstantEffect(() => {
-    const derivative = entity.derivative({
-      id: "derivedCount1",
-      transform: ({ get, payload }) => {
-        const animal = get("count");
-
-        return animal + payload.jump;
+    entity.particle({
+      id: "count",
+      initialState: 0,
+      mutator: {
+        inc({ state, payload }) {
+          return state + payload.jump;
+        },
       },
     });
-
-    return () => derivative.detonate();
   }, []);
 
-  const secondTrigger = adaptTrigger("secondTrigger");
-  const particleCount = adaptParticle("count");
+  const [particleCount, $particleCount] = adaptParticle("count");
 
   adaptEffect(() => {
-    const pstates = entity.getParticleStates();
-    const dstates = entity.getDerivativeStates();
-
-    console.log(pstates, dstates);
-  }, [particleCount.state]);
-
-  adaptEffect(() => {
-    particleCount.subscribe((newState) =>
-      console.log("particle subscription here", newState)
-    );
-  }, []);
+    $particleCount.subscribe((newState) => {
+      console.log("particle subscription here", newState);
+      console.log($particleCount.get());
+    });
+  }, [$particleCount]);
 
   console.log("Todo");
   return html` <div>${count2}</div>
-    <button @click=${() => particleCount.mutate("inc", { jump: 10 })}>
-      particleCount: ${particleCount.state}
+    <button @click=${() => $particleCount.mutate("inc", { jump: 10 })}>
+      particleCount: ${$particleCount.state}
     </button>
-    <button @click=${trigger.invoke}>firstTrigger</button>
-    <button @click=${secondTrigger.invoke}>secondTrigger</button>
-    <div>${$(TodoList)}</div>`;
+    <button @click=${() => setShowList(!showList)}>ToggleList</button>
+    <div>${showList ? $(TodoList) : ""}</div>`;
 }
 
 export default Todo;

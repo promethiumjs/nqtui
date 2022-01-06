@@ -1,4 +1,4 @@
-import { html, adaptState, adaptFunction } from "nqtui";
+import { html } from "nqtui";
 
 function TodoInput() {
   return html`
