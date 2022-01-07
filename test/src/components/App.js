@@ -13,16 +13,21 @@ function App() {
   const [count, setCount] = adaptState(0);
   const [showTodo, setShowTodo] = adaptState(true);
   const entity = adaptEntity();
-  const render = adaptFunction(["update"]);
+  const render = adaptFunction(["render"]);
 
   adaptInstantEffect(() => {
     const derivative = entity.derivative({
       id: "derivedCount1",
-      transform: ({ get, payload }) => {
-        const animal = get("count");
+      previousState: true,
+      transform: ({ get, getPrevious, state }) => {
+        const prevCount = getPrevious("count-1");
+        const count = get("count-1");
 
-        if (animal) return animal + payload.jump;
-        else return payload.jump;
+        console.log(count);
+        console.log(prevCount);
+        console.log(state);
+        if (state || state === 0) return count + state;
+        else return 0;
       },
     });
 
@@ -32,15 +37,21 @@ function App() {
   const [, $derivedCount] = adaptDerivative("derivedCount1");
 
   adaptEffect(() => {
-    $derivedCount.subscribe((newState) =>
+    const unsub = $derivedCount.subscribe((newState) =>
       console.log("derivative subscription here", newState)
     );
-  }, [$derivedCount]);
+
+    return () => unsub();
+  });
 
   console.log("App");
 
+  console.log($derivedCount.previous);
+
   return html`
-    <div>derivedCount: ${$derivedCount.get({ jump: 3 })}</div>
+    <div>dCount: ${$derivedCount.get()}</div>
+    <div>no2: ${$derivedCount.get()}</div>
+    <div>prevDerivedCount: ${$derivedCount.previous}</div>
     <button @click=${render}>Render</button>
     <button @click=${() => setCount(count + 1)}>
       Increment Count : ${count}
@@ -49,7 +60,7 @@ function App() {
       ToggleTodo
     </button>
     <div>App</div>
-    ${showTodo ? $(Todo, { count }) : ""}
+    ${showTodo ? $(Todo) : ""}
   `;
 }
 
