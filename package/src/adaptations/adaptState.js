@@ -18,11 +18,14 @@ function adaptState(initialStateValue) {
           : initialStateValue;
 
       const setStateFunction = (newStateValue, effectArray) => {
-        state[0] =
+        const newState =
           typeof newStateValue == "function"
             ? newStateValue(state[0])
             : newStateValue;
 
+        if (Object.is(newState, state[0])) return;
+
+        state[0] = newState;
         commonSetStateFunctionality(effectArray, currentStoreId);
       };
 

@@ -1,9 +1,6 @@
 import { AsyncDirective, directive } from "lit-html/async-directive.js";
-import {
-  adaptStore,
-  detonateStore,
-  getPreventMultipleRenders,
-} from "./adaptations/adaptations";
+import { adaptStore, detonateStore } from "./adaptations/adaptations";
+import queueRevertChangedToTrue from "./queueRevertChangedToTrue";
 import { noChange } from "lit-html";
 
 class $$ extends AsyncDirective {
@@ -34,13 +31,9 @@ class $$ extends AsyncDirective {
       //check "preventMultipleRenders" flag to prevent multiple redundant
       //re-rendering of components.
       //return component's return value to be rendered.
-      if (!getPreventMultipleRenders())
-        return this.ClassComponent
-          ? this.ClassComponent.construct({ parent, ...props })
-          : Component({ parent, ...props });
-      else if (this.changed) {
+      if (this.changed) {
         this.changed = false;
-        queueMicrotask(() => (this.changed = true));
+        queueRevertChangedToTrue(this);
 
         return this.ClassComponent
           ? this.ClassComponent.construct({ parent, ...props })
@@ -71,10 +64,10 @@ class $$ extends AsyncDirective {
     //keep old props to enable reuse when updating the component independently of it's
     //parent.
     this.oldProps = props;
-    return this.render(Component, props, part.parentNode);
+    return this.render(props);
   }
 
-  render(Component, props, parent) {
+  render(props) {
     return this.Component(props);
   }
 }

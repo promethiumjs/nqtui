@@ -9,6 +9,7 @@ function adaptStore(storeId) {
   if (!stores.has(storeId)) {
     const store = {
       currentAdaptationIds: {},
+      currentAdaptationIdStrings: [],
     };
 
     stores.set(storeId, store);
@@ -79,26 +80,28 @@ function detonateStore(storeId) {
   stores.delete(storeId);
 }
 
+const renderSet = new Set();
 //render associated component when called with store ids of components.
 //when called with store ids of custom adaptations and other non-components,
 //call their update function.
 function renderComponent(storeId) {
-  if (storeId.Component) {
-    storeId.setValue(storeId.Component(storeId.oldProps));
-    releaseCurrentStore();
-  } else if (storeId.call) {
-    storeId.call();
+  renderSet.add(storeId);
+
+  if (renderSet.size === 1) {
+    queueMicrotask(() => {
+      const renderArray = [...renderSet];
+      renderSet.clear();
+
+      renderArray.forEach((storeId) => {
+        if (storeId.Component) {
+          storeId.setValue(storeId.Component(storeId.oldProps));
+          releaseCurrentStore();
+        } else if (storeId.call) {
+          storeId.call();
+        }
+      });
+    });
   }
-}
-
-let preventMultipleRenders = false;
-
-function getPreventMultipleRenders() {
-  return preventMultipleRenders;
-}
-
-function setPreventMultipleRenders(boolean) {
-  preventMultipleRenders = boolean;
 }
 
 export {
@@ -109,6 +112,4 @@ export {
   getCurrentStoreId,
   getStore,
   renderComponent,
-  getPreventMultipleRenders,
-  setPreventMultipleRenders,
 };

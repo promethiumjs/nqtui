@@ -44,7 +44,7 @@ function adaptInvocationEffect(fn, guards) {
       };
 
       const invocationEffectStore = invocationEffect[0];
-      queueMicrotask(() => invocationEffectStore());
+      addInvocationEffect(invocationEffectStore);
       invocationEffect[0] = null;
       invocationEffect[1] = guards;
     }
@@ -54,6 +54,20 @@ function adaptInvocationEffect(fn, guards) {
     throw new Error(
       "adaptInvocationEffect() can only be used inside a Component or a Custom Adaptation."
     );
+  }
+}
+
+const invocationEffectArray = [];
+
+function addInvocationEffect(effect) {
+  invocationEffectArray.push(effect);
+
+  if (invocationEffectArray.length === 1) {
+    queueMicrotask(() => {
+      const newInvocationEffectArray = [...invocationEffectArray];
+      invocationEffectArray.length = 0;
+      newInvocationEffectArray.forEach((effect) => effect());
+    });
   }
 }
 

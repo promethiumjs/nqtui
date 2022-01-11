@@ -3,7 +3,7 @@ import { adaptEntity, adaptParticle } from "nqtx";
 import TodoList from "./TodoList";
 
 function Todo({ parent }) {
-  const entity = adaptEntity();
+  const $entity = adaptEntity();
   const [showList, setShowList] = adaptState(true);
   const [count, setCount] = adaptState(0);
 
@@ -14,8 +14,8 @@ function Todo({ parent }) {
   }, [$particleCount]);
 
   adaptEffect(() => {
-    const unsub = $particleCount.subscribe_instant((newState) => {
-      console.log("particle subscription here", newState);
+    const unsub = $particleCount.subscribe((newState, oldState) => {
+      console.log("particle subscription here", newState, oldState);
     });
 
     return () => unsub();
@@ -23,7 +23,7 @@ function Todo({ parent }) {
 
   console.log("Todo");
   return html` <button
-      @click=${() => $particleCount.mutate("inc", { jump: 10 })}
+      @click=${() => $particleCount.dispatch("inc", { jump: 20 })}
     >
       particleCount: ${particleCount}
     </button>
