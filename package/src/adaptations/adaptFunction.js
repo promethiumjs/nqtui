@@ -49,10 +49,9 @@ function emitEvent(
       eventArrayOrFuntion(...setupEventArgs, ...invocationEventArgs);
     else
       eventArrayOrFuntion.forEach((event) => {
-        typeof event == "function"
-          ? event(...setupEventArgs, ...invocationEventArgs)
-          : (event === "render" || event === "update") &&
-            renderComponent(currentStoreId);
+        event === "render" || event === "update"
+          ? renderComponent(currentStoreId)
+          : event(...setupEventArgs, ...invocationEventArgs);
       });
   } else {
     renderComponent(currentStoreId);

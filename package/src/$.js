@@ -25,15 +25,15 @@ class $$ extends AsyncDirective {
         this.ClassComponent.parent = parent;
       }
 
-      //prepare adaptation store for component.
-      adaptStore(this);
-
       //check "preventMultipleRenders" flag to prevent multiple redundant
       //re-rendering of components.
       //return component's return value to be rendered.
       if (this.changed) {
         this.changed = false;
         queueRevertChangedToTrue(this);
+
+        //prepare adaptation store for component.
+        adaptStore(this);
 
         return this.ClassComponent
           ? this.ClassComponent.construct({ parent, ...props })

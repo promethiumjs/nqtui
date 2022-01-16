@@ -1,22 +1,18 @@
 import { renderComponent } from "./adaptations";
 
-function commonSetStateFunctionality(effectArrayOrFunction, currentStoreId) {
+function commonSetStateFunctionality(
+  effectArrayOrFunction,
+  args,
+  currentStoreId
+) {
   if (effectArrayOrFunction) {
     if (typeof effectArrayOrFunction == "function") {
-      effectArrayOrFunction();
+      effectArrayOrFunction(...args);
     } else {
       effectArrayOrFunction.forEach((effect) => {
-        if (effect.fn) {
-          typeof effect.fn == "function"
-            ? effect.fn(...effect.args)
-            : (effect.fn === "render" || effect.fn === "update") &&
-              renderComponent(currentStoreId);
-        } else {
-          typeof effect == "function"
-            ? effect()
-            : (effect === "render" || effect === "update") &&
-              renderComponent(currentStoreId);
-        }
+        effect === "render" || effect === "update"
+          ? renderComponent(currentStoreId)
+          : effect(...args);
       });
     }
   } else {

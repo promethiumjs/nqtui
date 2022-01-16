@@ -4,9 +4,13 @@ import {
   adaptFunction,
   adaptState,
   adaptEffect,
-  adaptInstantEffect,
+  adaptInstantMount,
 } from "nqtui";
-import { adaptEntity, adaptDerivative, adaptDerivativeState } from "nqtx";
+import {
+  adaptEntity,
+  adaptDerivativeContext,
+  adaptDerivativeState,
+} from "nqtx";
 import Todo from "./Todo";
 
 function App() {
@@ -15,7 +19,7 @@ function App() {
   const $entity = adaptEntity();
   const render = adaptFunction(["render"]);
 
-  adaptInstantEffect(() => {
+  adaptInstantMount(() => {
     const $derivative = $entity.derivative({
       id: "derivedCount1",
       previousState: true,
@@ -29,9 +33,9 @@ function App() {
     });
 
     return () => $derivative.detonate();
-  }, []);
+  });
 
-  const [, $derivedCount] = adaptDerivative("derivedCount1");
+  const $derivedCount = adaptDerivativeContext("derivedCount1");
   const derivedCount = adaptDerivativeState("derivedCount");
 
   adaptEffect(() => {

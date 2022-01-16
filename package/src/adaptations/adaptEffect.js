@@ -52,17 +52,31 @@ function adaptEffect(fn, guards) {
   }
 }
 
-const asyncEffectAndCleanupArray = [];
+const asyncEffectAndCleanupArray1 = [];
+const asyncEffectAndCleanupArray2 = [];
+let one = true;
 
 function addAsyncEffect(effect) {
-  asyncEffectAndCleanupArray.push(effect);
+  if (one) {
+    asyncEffectAndCleanupArray1.push(effect);
 
-  if (asyncEffectAndCleanupArray.length === 1) {
-    setTimeout(() => {
-      const newEffectAndCleanupArray = [...asyncEffectAndCleanupArray];
-      asyncEffectAndCleanupArray.length = 0;
-      newEffectAndCleanupArray.forEach((effect) => effect());
-    });
+    if (asyncEffectAndCleanupArray1.length === 1) {
+      setTimeout(() => {
+        one = false;
+        asyncEffectAndCleanupArray1.forEach((effect) => effect());
+        asyncEffectAndCleanupArray1.length = 0;
+      });
+    }
+  } else {
+    asyncEffectAndCleanupArray2.push(effect);
+
+    if (asyncEffectAndCleanupArray2.length === 1) {
+      setTimeout(() => {
+        one = true;
+        asyncEffectAndCleanupArray2.forEach((effect) => effect());
+        asyncEffectAndCleanupArray2.length = 0;
+      });
+    }
   }
 }
 

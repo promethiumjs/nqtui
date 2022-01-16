@@ -9,7 +9,6 @@ function adaptStore(storeId) {
   if (!stores.has(storeId)) {
     const store = {
       currentAdaptationIds: {},
-      currentAdaptationIdStrings: [],
     };
 
     stores.set(storeId, store);
@@ -19,11 +18,26 @@ function adaptStore(storeId) {
   currentStore = stores.get(storeId);
   currentStoreId = storeId;
 
+  if (!currentStore.currentAdaptationIdStrings) {
+    currentStore.currentAdaptationIdStrings = "unset";
+
+    return;
+  }
+
+  if (currentStore.currentAdaptationIdStrings === "unset") {
+    currentStore.currentAdaptationIdStrings = Object.keys(
+      currentStore.currentAdaptationIds
+    );
+  }
+
   //reset adaptation ids to enable adaptation data to be accessed in the
   //right order.
-  Object.keys(currentStore.currentAdaptationIds).forEach(
-    (id) => (currentStore.currentAdaptationIds[id] = 0)
-  );
+  const currentAdaptationIdStrings = currentStore.currentAdaptationIdStrings;
+  const length = currentStore.currentAdaptationIdStrings.length;
+  for (let i = 0; i < length; i++) {
+    const adaptationIdString = currentAdaptationIdStrings[i];
+    currentStore.currentAdaptationIds[adaptationIdString] = 0;
+  }
 }
 
 function getCurrentStore() {
@@ -80,27 +94,51 @@ function detonateStore(storeId) {
   stores.delete(storeId);
 }
 
-const renderSet = new Set();
+const renderArray1 = [];
+const renderArray2 = [];
+let one = true;
 //render associated component when called with store ids of components.
 //when called with store ids of custom adaptations and other non-components,
 //call their update function.
 function renderComponent(storeId) {
-  renderSet.add(storeId);
+  if (one) {
+    renderArray1.push(storeId);
 
-  if (renderSet.size === 1) {
-    queueMicrotask(() => {
-      const renderArray = [...renderSet];
-      renderSet.clear();
+    if (renderArray1.length === 1) {
+      queueMicrotask(() => {
+        one = false;
 
-      renderArray.forEach((storeId) => {
-        if (storeId.Component) {
-          storeId.setValue(storeId.Component(storeId.oldProps));
-          releaseCurrentStore();
-        } else if (storeId.call) {
-          storeId.call();
-        }
+        renderArray1.forEach((storeId) => {
+          if (storeId.Component) {
+            storeId.setValue(storeId.Component(storeId.oldProps));
+            releaseCurrentStore();
+          } else if (storeId.call) {
+            storeId.call();
+          }
+        });
+
+        renderArray1.length = 0;
       });
-    });
+    }
+  } else {
+    renderArray2.push(storeId);
+
+    if (renderArray2.length === 1) {
+      queueMicrotask(() => {
+        one = true;
+
+        renderArray2.forEach((storeId) => {
+          if (storeId.Component) {
+            storeId.setValue(storeId.Component(storeId.oldProps));
+            releaseCurrentStore();
+          } else if (storeId.call) {
+            storeId.call();
+          }
+        });
+
+        renderArray2.length = 0;
+      });
+    }
   }
 }
 

@@ -22,6 +22,11 @@ import adaptation from "./adaptations/adaptation.js";
 import adaptState from "./adaptations/adaptState.js";
 import adaptGetState from "./adaptations/adaptGetState.js";
 import adaptRef from "./adaptations/adaptRef.js";
+import {
+  adaptMount,
+  adaptInstantMount,
+  adaptInvocationMount,
+} from "./adaptations/adaptMountFunctions.js";
 import adaptEffect from "./adaptations/adaptEffect.js";
 import adaptInstantEffect from "./adaptations/adaptInstantEffect.js";
 import adaptInvocationEffect from "./adaptations/adaptInvocationEffect.js";
@@ -52,6 +57,9 @@ export {
   adaptState,
   adaptGetState,
   adaptRef,
+  adaptMount,
+  adaptInstantMount,
+  adaptInvocationMount,
   adaptEffect,
   adaptInstantEffect,
   adaptInvocationEffect,

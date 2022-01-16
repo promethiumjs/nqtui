@@ -57,17 +57,31 @@ function adaptInvocationEffect(fn, guards) {
   }
 }
 
-const invocationEffectArray = [];
+const invocationEffectArray1 = [];
+const invocationEffectArray2 = [];
+let one = true;
 
 function addInvocationEffect(effect) {
-  invocationEffectArray.push(effect);
+  if (one) {
+    invocationEffectArray1.push(effect);
 
-  if (invocationEffectArray.length === 1) {
-    queueMicrotask(() => {
-      const newInvocationEffectArray = [...invocationEffectArray];
-      invocationEffectArray.length = 0;
-      newInvocationEffectArray.forEach((effect) => effect());
-    });
+    if (invocationEffectArray1.length === 1) {
+      queueMicrotask(() => {
+        one = false;
+        invocationEffectArray1.forEach((effect) => effect());
+        invocationEffectArray1.length = 0;
+      });
+    }
+  } else {
+    invocationEffectArray2.push(effect);
+
+    if (invocationEffectArray2.length === 1) {
+      queueMicrotask(() => {
+        one = true;
+        invocationEffectArray2.forEach((effect) => effect());
+        invocationEffectArray2.length = 0;
+      });
+    }
   }
 }
 

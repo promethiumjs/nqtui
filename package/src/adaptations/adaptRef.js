@@ -10,7 +10,8 @@ function adaptRef(initialRefValue) {
 
   if (currentStore) {
     if (!(currentStore.currentAdaptationIds.ref in currentStore.refs)) {
-      let ref = initialRefValue;
+      let ref = {};
+      ref.current = initialRefValue;
 
       currentStore.refs[currentStore.currentAdaptationIds.ref] = ref;
     }
