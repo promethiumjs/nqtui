@@ -7,9 +7,12 @@ function TodoInput() {
   const $incCount = adaptCatalyst("inc-cat");
 
   console.log("TodoInput");
+
   return html`
     <button @click=${() => $count2.set(count2 + 1)}>Count2: ${count2}</button>
-    <button @click=${() => $incCount.dispatch("inc", { jump: 30 })}>
+    <button
+      @click=${() => console.log($incCount.dispatch("inc", { jump: 30 }))}
+    >
       Dispactch
     </button>
     <button @click=${() => $entity.setParticleStates({ ["count-1"]: "red" })}>

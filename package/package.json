@@ -1,9 +1,10 @@
 {
   "name": "nqtui",
-  "version": "0.14.0",
+  "version": "0.15.0",
   "description": "UI library built on top of lit-html",
-  "source": "src/nqtui.js",
+  "source": "src/nqtui.ts",
   "main": "nqtui.js",
+  "types": "types.d.ts",
   "type": "module",
   "scripts": {
     "watch": "parcel watch",
@@ -36,7 +37,11 @@
     "lit-html": "^2.0.1"
   },
   "devDependencies": {
+    "@parcel/core": "^2.2.0",
+    "@parcel/packager-ts": "^2.2.0",
+    "@parcel/transformer-typescript-types": "^2.2.0",
     "jsdoc": "^3.6.7",
-    "parcel": "^2.0.1"
+    "parcel": "^2.0.1",
+    "typescript": "^4.5.4"
   }
 }

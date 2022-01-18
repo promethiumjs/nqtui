@@ -1,9 +1,8 @@
-import { html, $, adaptEffect, adaptInstantEffect, adaptState } from "nqtui";
+import { html, $, adaptEffect, adaptState } from "nqtui";
 import { adaptEntity, adaptParticle } from "nqtx";
 import TodoList from "./TodoList";
 
 function Todo({ parent }) {
-  const $entity = adaptEntity();
   const [showList, setShowList] = adaptState(true);
   const [count, setCount] = adaptState(0);
 
@@ -23,7 +22,7 @@ function Todo({ parent }) {
 
   console.log("Todo");
   return html` <button
-      @click=${() => $particleCount.dispatch("inc", { jump: 20 })}
+      @click=${() => console.log($particleCount.dispatch("inc", { jump: 20 }))}
     >
       particleCount: ${particleCount}
     </button>

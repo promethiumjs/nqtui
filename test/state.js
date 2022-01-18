@@ -16,6 +16,8 @@ entity.particle({
     inc({ $context, payload }) {
       console.log($context.state);
       $context.commit("inc", payload);
+
+      return $context.state;
     },
   },
 });
@@ -27,6 +29,8 @@ entity.catalyst({
       const $count1 = getContext("count-1");
       console.log($count1.state);
       $count1.commit("inc", payload);
+
+      return $count1.get();
     },
   },
 });
