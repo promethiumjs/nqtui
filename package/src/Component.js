@@ -5,8 +5,6 @@ import {
   getCurrentStore,
   getCurrentStoreId,
   renderComponent,
-  getPreventMultipleRenders,
-  setPreventMultipleRenders,
 } from "./adaptations/adaptations";
 
 export default class Component {
@@ -63,8 +61,6 @@ export default class Component {
       getCurrentStore,
       getCurrentStoreId,
       renderComponent,
-      getPreventMultipleRenders,
-      setPreventMultipleRenders,
     });
   }
 

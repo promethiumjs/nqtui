@@ -17,13 +17,16 @@ function adaptGetState(initialStateValue) {
           ? initialStateValue()
           : initialStateValue;
 
-      const setStateFunction = (newStateValue, effectArray) => {
-        state[2] =
+      const setStateFunction = (newStateValue, effectArray, ...args) => {
+        const newState =
           typeof newStateValue == "function"
             ? newStateValue(state[2])
             : newStateValue;
 
-        commonSetStateFunctionality(effectArray, currentStoreId);
+        if (Object.is(newState, state[2])) return;
+
+        state[2] = newState;
+        commonSetStateFunctionality(effectArray, args, currentStoreId);
       };
 
       const state = [() => state[2], setStateFunction, stateValue];

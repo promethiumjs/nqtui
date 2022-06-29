@@ -4,43 +4,54 @@ import {
   adaptFunction,
   adaptState,
   adaptEffect,
-  adaptInstantEffect,
+  adaptInstantMount,
 } from "nqtui";
-import { adaptEntity, adaptDerivative } from "nqtx";
+import {
+  adaptEntity,
+  adaptDerivativeContext,
+  adaptDerivativeState,
+} from "nqtx";
 import Todo from "./Todo";
 
 function App() {
   const [count, setCount] = adaptState(0);
   const [showTodo, setShowTodo] = adaptState(true);
-  const entity = adaptEntity();
-  const render = adaptFunction(["update"]);
+  const $entity = adaptEntity();
+  const render = adaptFunction(["render"]);
 
-  adaptInstantEffect(() => {
-    const derivative = entity.derivative({
+  adaptInstantMount(() => {
+    const $derivative = $entity.derivative({
       id: "derivedCount1",
-      transform: ({ get, payload }) => {
-        const animal = get("count");
+      previousState: true,
+      transform: ({ getState, getPreviousState, state }) => {
+        const prevCount = getPreviousState("count-1");
+        const count = getState("count-1");
 
-        if (animal) return animal + payload.jump;
-        else return payload.jump;
+        if (state || state === 0) return count + state;
+        else return 0;
       },
     });
 
-    return () => derivative.detonate();
-  }, []);
+    return () => $derivative.detonate();
+  });
 
-  const [, $derivedCount] = adaptDerivative("derivedCount1");
+  const $derivedCount = adaptDerivativeContext("derivedCount1");
+  const derivedCount = adaptDerivativeState("derivedCount");
 
   adaptEffect(() => {
-    $derivedCount.subscribe((newState) =>
-      console.log("derivative subscription here", newState)
+    const unsub = $derivedCount.subscribe((newState, oldState) =>
+      console.log("derivative subscription here", newState, oldState)
     );
-  }, [$derivedCount]);
+
+    return () => unsub();
+  });
 
   console.log("App");
 
   return html`
-    <div>derivedCount: ${$derivedCount.get({ jump: 3 })}</div>
+    <div>dCount: ${$derivedCount.get()}</div>
+    <div>no2: ${derivedCount}</div>
+    <div>prevDerivedCount: ${$derivedCount.previous}</div>
     <button @click=${render}>Render</button>
     <button @click=${() => setCount(count + 1)}>
       Increment Count : ${count}
@@ -49,7 +60,7 @@ function App() {
       ToggleTodo
     </button>
     <div>App</div>
-    ${showTodo ? $(Todo, { count }) : ""}
+    ${showTodo ? $(Todo) : ""}
   `;
 }
 
