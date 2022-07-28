@@ -1,5 +1,5 @@
 import Component from "./Component.js";
-import $ from "./$.js";
+import h from "./h.js";
 import { html } from "lit-html";
 import { classMap } from "lit-html/directives/class-map.js";
 import { styleMap } from "lit-html/directives/style-map.js";
@@ -36,7 +36,7 @@ import adaptFunction from "./adaptations/adaptFunction.js";
 
 export default Component;
 export {
-  $,
+  h,
   html,
   classMap,
   styleMap,

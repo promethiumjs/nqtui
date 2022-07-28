@@ -3,7 +3,7 @@ import { adaptStore, detonateStore } from "./adaptations/adaptations";
 import queueRevertChangedToTrue from "./queueRevertChangedToTrue";
 import { noChange } from "lit-html";
 
-class $$ extends AsyncDirective {
+class $ extends AsyncDirective {
   constructor(part) {
     super(part);
 
@@ -12,19 +12,8 @@ class $$ extends AsyncDirective {
     this.initialization = true;
   }
 
-  initializeComponent(Component, props, parent) {
-    //check if component is class component and add an instance of it to the directive
-    //instance as its associated component.
-    if (Component.prototype && Component.prototype.isClassComponent) {
-      this.ClassComponent = new Component(props);
-    }
-
+  initializeComponent(Component, parent) {
     this.Component = (props) => {
-      if (this.ClassComponent) {
-        this.ClassComponent.addProps(props);
-        this.ClassComponent.parent = parent;
-      }
-
       //check "preventMultipleRenders" flag to prevent multiple redundant
       //re-rendering of components.
       //return component's return value to be rendered.
@@ -35,9 +24,7 @@ class $$ extends AsyncDirective {
         //prepare adaptation store for component.
         adaptStore(this);
 
-        return this.ClassComponent
-          ? this.ClassComponent.construct({ parent, ...props })
-          : Component({ parent, ...props });
+        return Component({ parent, ...props });
       } else {
         return noChange;
       }
@@ -58,7 +45,7 @@ class $$ extends AsyncDirective {
   update(part, [Component, props]) {
     //initialize component on first render
     if (this.initialization) {
-      this.initializeComponent(Component, props, part.parentNode);
+      this.initializeComponent(Component, part.parentNode);
     }
 
     //keep old props to enable reuse when updating the component independently of it's
@@ -72,6 +59,6 @@ class $$ extends AsyncDirective {
   }
 }
 
-const $ = directive($$);
+const h = directive($);
 
-export default $;
+export default h;

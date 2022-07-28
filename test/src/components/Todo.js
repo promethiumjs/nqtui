@@ -1,35 +1,7 @@
-import { html, $, adaptEffect, adaptState } from "nqtui";
-import { adaptEntity, adaptParticle } from "nqtx";
-import TodoList from "./TodoList";
+import { html, h } from "nqtui";
 
-function Todo({ parent }) {
-  const [showList, setShowList] = adaptState(true);
-  const [count, setCount] = adaptState(0);
-
-  const [particleCount, $particleCount] = adaptParticle("count-1");
-
-  adaptEffect(() => {
-    return () => $particleCount.detonate();
-  }, [$particleCount]);
-
-  adaptEffect(() => {
-    const unsub = $particleCount.subscribe((newState, oldState) => {
-      console.log("particle subscription here", newState, oldState);
-    });
-
-    return () => unsub();
-  }, []);
-
-  console.log("Todo");
-  return html` <button
-      @click=${() => console.log($particleCount.dispatch("inc", { jump: 20 }))}
-    >
-      particleCount: ${particleCount}
-    </button>
-    <div>prevParticleCount: ${$particleCount.previous}</div>
-    <button @click=${() => setShowList(!showList)}>ToggleList</button>
-    <button @click=${() => setCount(count + 1)}>IncCount: ${count}</button>
-    <div>${showList ? $(TodoList) : ""}</div>`;
+function Todo() {
+  return html`<div>How are you doing??</div>`;
 }
 
 export default Todo;
