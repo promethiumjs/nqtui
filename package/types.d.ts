@@ -1,5 +1,5 @@
 import default from "./Component.js";
-import $ from "./$.js";
+import h from "./h.js";
 import { html } from "lit-html";
 import { classMap } from "lit-html/directives/class-map.js";
 import { styleMap } from "lit-html/directives/style-map.js";
@@ -25,6 +25,6 @@ import adaptMemo from "./adaptations/adaptMemo.js";
 import adaptCallback from "./adaptations/adaptCallback.js";
 import adaptFunction from "./adaptations/adaptFunction.js";
 export default Component;
-export { $, html, classMap, styleMap, guard, cache, repeat, live, ifDefined, ref, createRef, until, asyncAppend, asyncReplace, adaptation, adaptState, adaptGetState, adaptRef, adaptMount, adaptInstantMount, adaptInvocationMount, adaptEffect, adaptInstantEffect, adaptInvocationEffect, adaptMemo, adaptCallback, adaptFunction };
+export { h, html, classMap, styleMap, guard, cache, repeat, live, ifDefined, ref, createRef, until, asyncAppend, asyncReplace, adaptation, adaptState, adaptGetState, adaptRef, adaptMount, adaptInstantMount, adaptInvocationMount, adaptEffect, adaptInstantEffect, adaptInvocationEffect, adaptMemo, adaptCallback, adaptFunction };
 
 //# sourceMappingURL=types.d.ts.map
