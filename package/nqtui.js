@@ -134,7 +134,7 @@ class $d302ed7d0e97d743$var$$ extends (0, $6oBH7$AsyncDirective) {
     }
     initializeComponent(Component, parent) {
         this.Component = (props)=>{
-            //check "preventMultipleRenders" flag to prevent multiple redundant
+            //check "changed" flag to prevent multiple redundant
             //re-rendering of components.
             //return component's return value to be rendered.
             if (this.changed) {

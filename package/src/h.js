@@ -14,7 +14,7 @@ class $ extends AsyncDirective {
 
   initializeComponent(Component, parent) {
     this.Component = (props) => {
-      //check "preventMultipleRenders" flag to prevent multiple redundant
+      //check "changed" flag to prevent multiple redundant
       //re-rendering of components.
       //return component's return value to be rendered.
       if (this.changed) {
