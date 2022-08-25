@@ -27,6 +27,7 @@ import { unsafeSVG } from "lit-html/directives/unsafe-svg.js";
 import { until } from "lit-html/directives/until.js";
 import { asyncAppend } from "lit-html/directives/async-append.js";
 import { asyncReplace } from "lit-html/directives/async-replace.js";
+import { animate, AnimateController } from "@lit-labs/motion";
 
 export default Component;
 export {
@@ -58,4 +59,6 @@ export {
   until,
   asyncAppend,
   asyncReplace,
+  animate,
+  AnimateController,
 };
