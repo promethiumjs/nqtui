@@ -1,6 +1,8 @@
 import default from "./Component.js";
 import h from "./h.js";
 import { html } from "lit-html";
+import adaptEffect from "./adaptations/new-api/adaptEffect/adaptEffect.js";
+import adaptState from "./adaptations/new-api/adaptState/adaptState.js";
 import { classMap } from "lit-html/directives/class-map.js";
 import { styleMap } from "lit-html/directives/style-map.js";
 import { guard } from "lit-html/directives/guard.js";
@@ -12,19 +14,7 @@ import { ref, createRef } from "lit-html/directives/ref.js";
 import { until } from "lit-html/directives/until.js";
 import { asyncAppend } from "lit-html/directives/async-append.js";
 import { asyncReplace } from "lit-html/directives/async-replace.js";
-import { adaptStore as adapt, releaseCurrentStore as release, detonateStore as detonate } from "./adaptations/adaptations.js";
-import adaptation from "./adaptations/adaptation.js";
-import adaptState from "./adaptations/adaptState.js";
-import adaptGetState from "./adaptations/adaptGetState.js";
-import adaptRef from "./adaptations/adaptRef.js";
-import { adaptMount, adaptInstantMount, adaptInvocationMount } from "./adaptations/adaptMountFunctions.js";
-import adaptEffect from "./adaptations/adaptEffect.js";
-import adaptInstantEffect from "./adaptations/adaptInstantEffect.js";
-import adaptInvocationEffect from "./adaptations/adaptInvocationEffect.js";
-import adaptMemo from "./adaptations/adaptMemo.js";
-import adaptCallback from "./adaptations/adaptCallback.js";
-import adaptFunction from "./adaptations/adaptFunction.js";
 export default Component;
-export { h, html, classMap, styleMap, guard, cache, repeat, live, ifDefined, ref, createRef, until, asyncAppend, asyncReplace, adaptation, adaptState, adaptGetState, adaptRef, adaptMount, adaptInstantMount, adaptInvocationMount, adaptEffect, adaptInstantEffect, adaptInvocationEffect, adaptMemo, adaptCallback, adaptFunction };
+export { h, html, adaptEffect, adaptState, classMap, styleMap, guard, cache, repeat, live, ifDefined, ref, createRef, until, asyncAppend, asyncReplace };
 
 //# sourceMappingURL=types.d.ts.map

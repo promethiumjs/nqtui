@@ -2,18 +2,13 @@ import observableSubscriptionsCleanup from "../observableSubscriptionsCleanup.js
 import getCleanupNode from "../getCleanupNode.js";
 import { effectContexts } from "../effectContexts.js";
 import { queueCleanupUpdates } from "../cleanupUpdateFns.js";
+import { sendStaleSignals, sendFreshSignals } from "../sendSignals.js";
 
 export function sendStaleNotifications(memo) {
   const activeSubscriptions = memo.activeSubscriptions;
   memo.activeSubscriptions = activeSubscriptions === "one" ? "two" : "one";
 
-  memo.memoSubscriptions[activeSubscriptions].forEach((subscription) => {
-    subscription.sendSignal("stale");
-  });
-
-  memo.effectSubscriptions[activeSubscriptions].forEach((subscription) => {
-    subscription.sendSignal("stale");
-  });
+  sendStaleSignals(memo, activeSubscriptions);
 }
 
 export function updateValueAndSendFreshNotifications(memo, fn) {
@@ -23,35 +18,31 @@ export function updateValueAndSendFreshNotifications(memo, fn) {
   const cleanupSet = getCleanupNode(memo).get(0);
   for (const cleanup of cleanupSet) {
     if (cleanup.type === "memo") {
-      memo.value = cleanup.value;
-
-      return;
+      return cleanup;
     }
     cleanup();
   }
-
   cleanupSet.clear();
 
   effectContexts.push(memo);
 
   memo.value = fn();
-  cleanupSet.add(memo);
 
-  queueCleanupUpdates(() => {
-    cleanupSet.clear();
+  if (memo.firstRun) {
+    memo.firstRun = false;
     cleanupSet.add(() => observableSubscriptionsCleanup(memo));
-  });
+  } else {
+    cleanupSet.add(memo);
+    queueCleanupUpdates(() => {
+      cleanupSet.clear();
+      cleanupSet.add(() => observableSubscriptionsCleanup(memo));
+    });
+  }
 
   effectContexts.pop();
 
   const activeSubscriptions =
     memo.activeSubscriptions === "one" ? "two" : "one";
 
-  memo.memoSubscriptions[activeSubscriptions].forEach((subscription) => {
-    subscription.sendSignal("fresh");
-  });
-
-  memo.effectSubscriptions[activeSubscriptions].forEach((subscription) => {
-    subscription.sendSignal("fresh");
-  });
+  sendFreshSignals(memo, activeSubscriptions);
 }
