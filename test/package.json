@@ -11,9 +11,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
   "devDependencies": {
     "sass": "^1.43.4",
-    "vite": "^2.6.13"
+    "vite": "^3.0.9"
   }
 }

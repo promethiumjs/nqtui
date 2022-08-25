@@ -1,30 +1,44 @@
 import { AsyncDirective, directive } from "lit-html/async-directive.js";
-import { adaptStore, detonateStore } from "./adaptations/adaptations";
 import queueRevertChangedToTrue from "./queueRevertChangedToTrue";
+import { renderComponent } from "./adaptations/adaptations";
+import adaptSyncEffect from "./adaptations/new-api/adaptEffect/adaptSyncEffect";
 import { noChange } from "lit-html";
 
 class $ extends AsyncDirective {
   constructor(part) {
     super(part);
 
-    //boolean flag to enable initialization of the
-    //component in the update method.
+    //boolean flag to enable initialization of the component in the update method.
     this.initialization = true;
   }
 
-  initializeComponent(Component, parent) {
-    this.Component = (props) => {
-      //check "preventMultipleRenders" flag to prevent multiple redundant
-      //re-rendering of components.
-      //return component's return value to be rendered.
+  initializeComponent(Component, parent, props) {
+    this.cleanups = [];
+
+    let htmlFn;
+    this.cleanups.push(
+      adaptSyncEffect(() => (htmlFn = Component({ parent, props })), [])
+    );
+
+    const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult]] =
+      adaptSyncEffect(
+        (_, [htmlTemplateResult]) => renderComponent(this, htmlTemplateResult),
+        [htmlFn],
+        { defer: true, isComponent: true }
+      );
+
+    this.cleanups.push(ComponentCleanup);
+    this.ComponentDependencyUpdate = ComponentDependencyUpdate;
+
+    this.Component = () => {
+      //check "changed" flag to prevent multiple redundant re-rendering of components.
       if (this.changed) {
         this.changed = false;
         queueRevertChangedToTrue(this);
 
-        //prepare adaptation store for component.
-        adaptStore(this);
+        const htmlTemplateResult = this.ComponentDependencyUpdate?.();
 
-        return Component({ parent, ...props });
+        return htmlTemplateResult;
       } else {
         return noChange;
       }
@@ -32,30 +46,32 @@ class $ extends AsyncDirective {
 
     //initialize "changed" flag as true.
     this.changed = true;
-    //prevent re-initialization of component on subsequent renders after
-    //initialization.
+    //prevent re-initialization of component on subsequent renders after initialization.
     this.initialization = false;
+
+    return htmlTemplateResult;
   }
 
   disconnected() {
-    //call pending cleanups and destroy component adaptation store.
-    detonateStore(this);
+    this.cleanups.forEach((cleanup) => cleanup());
   }
 
   update(part, [Component, props]) {
     //initialize component on first render
     if (this.initialization) {
-      this.initializeComponent(Component, part.parentNode);
+      this.props = props;
+      return this.initializeComponent(Component, part.parentNode, this.props);
     }
 
-    //keep old props to enable reuse when updating the component independently of it's
-    //parent.
-    this.oldProps = props;
-    return this.render(props);
+    for (const prop in props) {
+      this.props[prop] = props[prop];
+    }
+
+    return this.render();
   }
 
-  render(props) {
-    return this.Component(props);
+  render() {
+    return this.Component();
   }
 }
 

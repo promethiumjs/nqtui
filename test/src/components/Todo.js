@@ -1,7 +1,11 @@
-import { html, h } from "nqtui";
+import { html, h, adaptEffect } from "nqtui";
 
-function Todo() {
-  return html`<div>How are you doing??</div>`;
+function Todo({ props }) {
+  adaptEffect(() => {
+    return () => console.log("news");
+  });
+
+  return () => html`<div>How are you doing?? ${props.text}</div>`;
 }
 
 export default Todo;

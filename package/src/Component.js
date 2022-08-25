@@ -1,14 +1,8 @@
 import { render, html } from "lit-html";
 import h from "./h";
-import {
-  releaseCurrentStore,
-  getCurrentStore,
-  getCurrentStoreId,
-  renderComponent,
-} from "./adaptations/adaptations";
 
 export default class Component {
-  static createRoot(component, props) {
+  static createRoot(Component, props) {
     //check whether or not "renderContainer" is a string and handle it
     //accordingly.
     if (
@@ -19,7 +13,7 @@ export default class Component {
 
     const renderComponent = () =>
       render(
-        html`${h(component, props)}`,
+        html`${h(Component, props)}`,
         props.renderContainer,
         props.renderOptions
       );
@@ -27,19 +21,8 @@ export default class Component {
     //queue microtask to render the component to enable all extensions to run first.
     queueMicrotask(renderComponent);
 
-    //release the reference to the current store.
-    releaseCurrentStore();
-
     //return "renderComponet" function to allow re-rendering of whole root
     //component tree.
     return renderComponent;
-  }
-
-  static use(extension) {
-    extension.addAdaptationMethods({
-      getCurrentStore,
-      getCurrentStoreId,
-      renderComponent,
-    });
   }
 }
