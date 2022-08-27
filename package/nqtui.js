@@ -1,25 +1,24 @@
 import {html as $e9d5482ee1d4bd25$re_export$html, render as $6oBH7$render, noChange as $6oBH7$noChange} from "lit-html";
 import {classMap as $e9d5482ee1d4bd25$re_export$classMap} from "lit-html/directives/class-map.js";
 import {styleMap as $e9d5482ee1d4bd25$re_export$styleMap} from "lit-html/directives/style-map.js";
-import {when as $e9d5482ee1d4bd25$re_export$when} from "lit-html/directives/when.js";
-import {choose as $e9d5482ee1d4bd25$re_export$choose} from "lit-html/directives/choose.js";
-import {map as $e9d5482ee1d4bd25$re_export$map} from "lit-html/directives/map.js";
-import {repeat as $e9d5482ee1d4bd25$re_export$repeat} from "lit-html/directives/repeat.js";
-import {join as $e9d5482ee1d4bd25$re_export$join} from "lit-html/directives/join.js";
-import {range as $e9d5482ee1d4bd25$re_export$range} from "lit-html/directives/range.js";
-import {ifDefined as $e9d5482ee1d4bd25$re_export$ifDefined} from "lit-html/directives/if-defined.js";
-import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
-import {keyed as $e9d5482ee1d4bd25$re_export$keyed} from "lit-html/directives/keyed.js";
 import {guard as $e9d5482ee1d4bd25$re_export$guard} from "lit-html/directives/guard.js";
+import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
+import {repeat as $e9d5482ee1d4bd25$re_export$repeat} from "lit-html/directives/repeat.js";
 import {live as $e9d5482ee1d4bd25$re_export$live} from "lit-html/directives/live.js";
+import {ifDefined as $e9d5482ee1d4bd25$re_export$ifDefined} from "lit-html/directives/if-defined.js";
 import {ref as $e9d5482ee1d4bd25$re_export$ref, createRef as $e9d5482ee1d4bd25$re_export$createRef} from "lit-html/directives/ref.js";
-import {templateContent as $e9d5482ee1d4bd25$re_export$templateContent} from "lit-html/directives/template-content.js";
-import {unsafeHTML as $e9d5482ee1d4bd25$re_export$unsafeHTML} from "lit-html/directives/unsafe-html.js";
-import {unsafeSVG as $e9d5482ee1d4bd25$re_export$unsafeSVG} from "lit-html/directives/unsafe-svg.js";
 import {until as $e9d5482ee1d4bd25$re_export$until} from "lit-html/directives/until.js";
 import {asyncAppend as $e9d5482ee1d4bd25$re_export$asyncAppend} from "lit-html/directives/async-append.js";
 import {asyncReplace as $e9d5482ee1d4bd25$re_export$asyncReplace} from "lit-html/directives/async-replace.js";
-import {animate as $e9d5482ee1d4bd25$re_export$animate, AnimateController as $e9d5482ee1d4bd25$re_export$AnimateController} from "@lit-labs/motion";
+import {when as $e9d5482ee1d4bd25$re_export$when} from "lit-html/directives/when.js";
+import {choose as $e9d5482ee1d4bd25$re_export$choose} from "lit-html/directives/choose.js";
+import {map as $e9d5482ee1d4bd25$re_export$map} from "lit-html/directives/map.js";
+import {join as $e9d5482ee1d4bd25$re_export$join} from "lit-html/directives/join.js";
+import {range as $e9d5482ee1d4bd25$re_export$range} from "lit-html/directives/range.js";
+import {keyed as $e9d5482ee1d4bd25$re_export$keyed} from "lit-html/directives/keyed.js";
+import {templateContent as $e9d5482ee1d4bd25$re_export$templateContent} from "lit-html/directives/template-content.js";
+import {unsafeHTML as $e9d5482ee1d4bd25$re_export$unsafeHTML} from "lit-html/directives/unsafe-html.js";
+import {unsafeSVG as $e9d5482ee1d4bd25$re_export$unsafeSVG} from "lit-html/directives/unsafe-svg.js";
 import {AsyncDirective as $6oBH7$AsyncDirective, directive as $6oBH7$directive} from "lit-html/async-directive.js";
 
 
@@ -322,10 +321,7 @@ class $d302ed7d0e97d743$var$$ extends (0, $6oBH7$AsyncDirective) {
     initializeComponent(Component, parent, props) {
         this.cleanups = [];
         let htmlFn;
-        this.cleanups.push((0, $6672f2238cd21cb1$export$2e2bcd8739ae039)(()=>htmlFn = Component({
-                parent: parent,
-                props: props
-            }), []));
+        this.cleanups.push((0, $6672f2238cd21cb1$export$2e2bcd8739ae039)(()=>htmlFn = Component(props, parent), []));
         const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1]] = (0, $6672f2238cd21cb1$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>(0, $33b4b724c36214e1$export$fa7f552cb3a457a6)(this, htmlTemplateResult), [
             htmlFn
         ], {
@@ -634,9 +630,8 @@ function $8c8d00d7442872ff$export$2e2bcd8739ae039(fn) {
 
 
 
-
 var $e9d5482ee1d4bd25$export$2e2bcd8739ae039 = (0, $80e87c3714494da7$export$2e2bcd8739ae039);
 
 
-export {$e9d5482ee1d4bd25$export$2e2bcd8739ae039 as default, $d302ed7d0e97d743$export$2e2bcd8739ae039 as h, $e9d5482ee1d4bd25$re_export$html as html, $8643b34629802f21$export$2e2bcd8739ae039 as adaptState, $f8099572391d5855$export$2e2bcd8739ae039 as adaptEffect, $22e520d1cc5cf57a$export$2e2bcd8739ae039 as adaptRenderEffect, $6672f2238cd21cb1$export$2e2bcd8739ae039 as adaptSyncEffect, $8c8d00d7442872ff$export$2e2bcd8739ae039 as adaptMemo, $e9d5482ee1d4bd25$re_export$classMap as classMap, $e9d5482ee1d4bd25$re_export$styleMap as styleMap, $e9d5482ee1d4bd25$re_export$when as when, $e9d5482ee1d4bd25$re_export$choose as choose, $e9d5482ee1d4bd25$re_export$guard as guard, $e9d5482ee1d4bd25$re_export$cache as cache, $e9d5482ee1d4bd25$re_export$keyed as keyed, $e9d5482ee1d4bd25$re_export$map as map, $e9d5482ee1d4bd25$re_export$repeat as repeat, $e9d5482ee1d4bd25$re_export$join as join, $e9d5482ee1d4bd25$re_export$range as range, $e9d5482ee1d4bd25$re_export$live as live, $e9d5482ee1d4bd25$re_export$ifDefined as ifDefined, $e9d5482ee1d4bd25$re_export$ref as ref, $e9d5482ee1d4bd25$re_export$createRef as createRef, $e9d5482ee1d4bd25$re_export$templateContent as templateContent, $e9d5482ee1d4bd25$re_export$unsafeHTML as unsafeHTML, $e9d5482ee1d4bd25$re_export$unsafeSVG as unsafeSVG, $e9d5482ee1d4bd25$re_export$until as until, $e9d5482ee1d4bd25$re_export$asyncAppend as asyncAppend, $e9d5482ee1d4bd25$re_export$asyncReplace as asyncReplace, $e9d5482ee1d4bd25$re_export$animate as animate, $e9d5482ee1d4bd25$re_export$AnimateController as AnimateController};
+export {$e9d5482ee1d4bd25$export$2e2bcd8739ae039 as default, $d302ed7d0e97d743$export$2e2bcd8739ae039 as h, $e9d5482ee1d4bd25$re_export$html as html, $8643b34629802f21$export$2e2bcd8739ae039 as adaptState, $f8099572391d5855$export$2e2bcd8739ae039 as adaptEffect, $22e520d1cc5cf57a$export$2e2bcd8739ae039 as adaptRenderEffect, $6672f2238cd21cb1$export$2e2bcd8739ae039 as adaptSyncEffect, $8c8d00d7442872ff$export$2e2bcd8739ae039 as adaptMemo, $e9d5482ee1d4bd25$re_export$classMap as classMap, $e9d5482ee1d4bd25$re_export$styleMap as styleMap, $e9d5482ee1d4bd25$re_export$when as when, $e9d5482ee1d4bd25$re_export$choose as choose, $e9d5482ee1d4bd25$re_export$guard as guard, $e9d5482ee1d4bd25$re_export$cache as cache, $e9d5482ee1d4bd25$re_export$keyed as keyed, $e9d5482ee1d4bd25$re_export$map as map, $e9d5482ee1d4bd25$re_export$repeat as repeat, $e9d5482ee1d4bd25$re_export$join as join, $e9d5482ee1d4bd25$re_export$range as range, $e9d5482ee1d4bd25$re_export$live as live, $e9d5482ee1d4bd25$re_export$ifDefined as ifDefined, $e9d5482ee1d4bd25$re_export$ref as ref, $e9d5482ee1d4bd25$re_export$createRef as createRef, $e9d5482ee1d4bd25$re_export$templateContent as templateContent, $e9d5482ee1d4bd25$re_export$unsafeHTML as unsafeHTML, $e9d5482ee1d4bd25$re_export$unsafeSVG as unsafeSVG, $e9d5482ee1d4bd25$re_export$until as until, $e9d5482ee1d4bd25$re_export$asyncAppend as asyncAppend, $e9d5482ee1d4bd25$re_export$asyncReplace as asyncReplace};
 //# sourceMappingURL=nqtui.js.map

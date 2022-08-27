@@ -17,7 +17,7 @@ class $ extends AsyncDirective {
 
     let htmlFn;
     this.cleanups.push(
-      adaptSyncEffect(() => (htmlFn = Component({ parent, props })), [])
+      adaptSyncEffect(() => (htmlFn = Component(props, parent)), [])
     );
 
     const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult]] =

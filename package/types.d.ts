@@ -26,8 +26,7 @@ import { unsafeSVG } from "lit-html/directives/unsafe-svg.js";
 import { until } from "lit-html/directives/until.js";
 import { asyncAppend } from "lit-html/directives/async-append.js";
 import { asyncReplace } from "lit-html/directives/async-replace.js";
-import { animate, AnimateController } from "@lit-labs/motion";
 export default Component;
-export { h, html, adaptState, adaptEffect, adaptRenderEffect, adaptSyncEffect, adaptMemo, classMap, styleMap, when, choose, guard, cache, keyed, map, repeat, join, range, live, ifDefined, ref, createRef, templateContent, unsafeHTML, unsafeSVG, until, asyncAppend, asyncReplace, animate, AnimateController };
+export { h, html, adaptState, adaptEffect, adaptRenderEffect, adaptSyncEffect, adaptMemo, classMap, styleMap, when, choose, guard, cache, keyed, map, repeat, join, range, live, ifDefined, ref, createRef, templateContent, unsafeHTML, unsafeSVG, until, asyncAppend, asyncReplace };
 
 //# sourceMappingURL=types.d.ts.map
