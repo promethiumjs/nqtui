@@ -1,6 +1,6 @@
-import { html, h, adaptEffect } from "nqtui";
+import { html, adaptEffect } from "nqtui";
 
-function Todo({ props }) {
+function Todo(props) {
   adaptEffect(() => {
     return () => console.log("news");
   });

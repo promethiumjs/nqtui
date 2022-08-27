@@ -1,12 +1,21 @@
 import {html as $e9d5482ee1d4bd25$re_export$html, render as $6oBH7$render, noChange as $6oBH7$noChange} from "lit-html";
 import {classMap as $e9d5482ee1d4bd25$re_export$classMap} from "lit-html/directives/class-map.js";
 import {styleMap as $e9d5482ee1d4bd25$re_export$styleMap} from "lit-html/directives/style-map.js";
-import {guard as $e9d5482ee1d4bd25$re_export$guard} from "lit-html/directives/guard.js";
-import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
+import {when as $e9d5482ee1d4bd25$re_export$when} from "lit-html/directives/when.js";
+import {choose as $e9d5482ee1d4bd25$re_export$choose} from "lit-html/directives/choose.js";
+import {map as $e9d5482ee1d4bd25$re_export$map} from "lit-html/directives/map.js";
 import {repeat as $e9d5482ee1d4bd25$re_export$repeat} from "lit-html/directives/repeat.js";
-import {live as $e9d5482ee1d4bd25$re_export$live} from "lit-html/directives/live.js";
+import {join as $e9d5482ee1d4bd25$re_export$join} from "lit-html/directives/join.js";
+import {range as $e9d5482ee1d4bd25$re_export$range} from "lit-html/directives/range.js";
 import {ifDefined as $e9d5482ee1d4bd25$re_export$ifDefined} from "lit-html/directives/if-defined.js";
+import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
+import {keyed as $e9d5482ee1d4bd25$re_export$keyed} from "lit-html/directives/keyed.js";
+import {guard as $e9d5482ee1d4bd25$re_export$guard} from "lit-html/directives/guard.js";
+import {live as $e9d5482ee1d4bd25$re_export$live} from "lit-html/directives/live.js";
 import {ref as $e9d5482ee1d4bd25$re_export$ref, createRef as $e9d5482ee1d4bd25$re_export$createRef} from "lit-html/directives/ref.js";
+import {templateContent as $e9d5482ee1d4bd25$re_export$templateContent} from "lit-html/directives/template-content.js";
+import {unsafeHTML as $e9d5482ee1d4bd25$re_export$unsafeHTML} from "lit-html/directives/unsafe-html.js";
+import {unsafeSVG as $e9d5482ee1d4bd25$re_export$unsafeSVG} from "lit-html/directives/unsafe-svg.js";
 import {until as $e9d5482ee1d4bd25$re_export$until} from "lit-html/directives/until.js";
 import {asyncAppend as $e9d5482ee1d4bd25$re_export$asyncAppend} from "lit-html/directives/async-append.js";
 import {asyncReplace as $e9d5482ee1d4bd25$re_export$asyncReplace} from "lit-html/directives/async-replace.js";
@@ -312,10 +321,7 @@ class $d302ed7d0e97d743$var$$ extends (0, $6oBH7$AsyncDirective) {
     initializeComponent(Component, parent, props) {
         this.cleanups = [];
         let htmlFn;
-        this.cleanups.push((0, $6672f2238cd21cb1$export$2e2bcd8739ae039)(()=>htmlFn = Component({
-                parent: parent,
-                props: props
-            }), []));
+        this.cleanups.push((0, $6672f2238cd21cb1$export$2e2bcd8739ae039)(()=>htmlFn = Component(props, parent), []));
         const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1]] = (0, $6672f2238cd21cb1$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>(0, $33b4b724c36214e1$export$fa7f552cb3a457a6)(this, htmlTemplateResult), [
             htmlFn
         ], {
@@ -374,32 +380,6 @@ class $80e87c3714494da7$export$2e2bcd8739ae039 {
 }
 
 
-
-
-
-
-
-
-function $f8099572391d5855$export$2e2bcd8739ae039(fn, depArray, options) {
-    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
-    const execute = (0, $af6bee6a6a1be209$export$2e2bcd8739ae039)[tracking];
-    const effect = {
-        firstRun: true,
-        type: "async",
-        tracking: tracking,
-        childCount: 0,
-        position: null,
-        level: null,
-        cleanupTree: null,
-        cleanupTreeNodePointer: null,
-        observableSubscriptionSets: new Set(),
-        staleStateValuesCount: 0,
-        sendSignal: (signal)=>(0, $f8fee2fbb686d5e0$export$2e2bcd8739ae039)(effect, execute, fn, depArray, signal)
-    };
-    (0, $1737cf3808fbaf09$export$2e2bcd8739ae039)(effect);
-    (0, $7e9b891dc94e39a9$export$2e2bcd8739ae039)(effect);
-    setTimeout(()=>execute(effect, fn, depArray, options));
-}
 
 
 
@@ -491,6 +471,157 @@ function $8643b34629802f21$export$2e2bcd8739ae039(initialValue) {
 
 
 
+function $f8099572391d5855$export$2e2bcd8739ae039(fn, depArray, options) {
+    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+    const execute = (0, $af6bee6a6a1be209$export$2e2bcd8739ae039)[tracking];
+    const effect = {
+        firstRun: true,
+        type: "async",
+        tracking: tracking,
+        childCount: 0,
+        position: null,
+        level: null,
+        cleanupTree: null,
+        cleanupTreeNodePointer: null,
+        observableSubscriptionSets: new Set(),
+        staleStateValuesCount: 0,
+        sendSignal: (signal)=>(0, $f8fee2fbb686d5e0$export$2e2bcd8739ae039)(effect, execute, fn, depArray, signal)
+    };
+    (0, $1737cf3808fbaf09$export$2e2bcd8739ae039)(effect);
+    (0, $7e9b891dc94e39a9$export$2e2bcd8739ae039)(effect);
+    setTimeout(()=>execute(effect, fn, depArray, options));
+}
+
+
+
+
+
+
+function $22e520d1cc5cf57a$export$2e2bcd8739ae039(fn, depArray, options) {
+    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+    const execute = (0, $af6bee6a6a1be209$export$2e2bcd8739ae039)[tracking];
+    const effect = {
+        firstRun: true,
+        type: "render",
+        tracking: tracking,
+        childCount: 0,
+        position: null,
+        level: null,
+        cleanupTree: null,
+        cleanupTreeNodePointer: null,
+        observableSubscriptionSets: new Set(),
+        staleStateValuesCount: 0,
+        sendSignal: (signal)=>(0, $f8fee2fbb686d5e0$export$2e2bcd8739ae039)(effect, execute, fn, depArray, signal)
+    };
+    (0, $1737cf3808fbaf09$export$2e2bcd8739ae039)(effect);
+    (0, $7e9b891dc94e39a9$export$2e2bcd8739ae039)(effect);
+    queueMicrotask(()=>execute(effect, fn, depArray, options));
+}
+
+
+
+
+
+
+
+
+function $80a9035b96e6d6d4$export$e5bb50160f277516(memo) {
+    const activeSubscriptions = memo.activeSubscriptions;
+    memo.activeSubscriptions = activeSubscriptions === "one" ? "two" : "one";
+    (0, $fd89f61bde68a313$export$ac2bda8cd89c2590)(memo, activeSubscriptions);
+}
+function $80a9035b96e6d6d4$export$18b21b881485961f(memo, fn) {
+    //to enable children effects to obtain correct positions upon recreation
+    memo.childCount = 0;
+    const cleanupSet = (0, $ea1b540c76cf6f03$export$2e2bcd8739ae039)(memo).get(0);
+    for (const cleanup of cleanupSet){
+        if (cleanup.type === "memo") return cleanup;
+        cleanup();
+    }
+    cleanupSet.clear();
+    (0, $fcbb8a910a0afadf$export$24642de4c13f18dd).push(memo);
+    memo.value = fn();
+    if (memo.firstRun) {
+        memo.firstRun = false;
+        cleanupSet.add(()=>(0, $647dcaf3efba5896$export$2e2bcd8739ae039)(memo));
+    } else {
+        cleanupSet.add(memo);
+        (0, $b5269cf3b352f2fc$export$1b3c45eb1fa5da02)(()=>{
+            cleanupSet.clear();
+            cleanupSet.add(()=>(0, $647dcaf3efba5896$export$2e2bcd8739ae039)(memo));
+        });
+    }
+    (0, $fcbb8a910a0afadf$export$24642de4c13f18dd).pop();
+    const activeSubscriptions = memo.activeSubscriptions === "one" ? "two" : "one";
+    (0, $fd89f61bde68a313$export$436b218e987b82fc)(memo, activeSubscriptions);
+}
+
+
+function $01246e38f2b54ff1$export$2e2bcd8739ae039(memo, fn, signal) {
+    if (signal === "stale") {
+        memo.staleStateValuesCount++;
+        if (memo.staleStateValuesCount === 1) (0, $80a9035b96e6d6d4$export$e5bb50160f277516)(memo);
+    } else if (signal === "fresh") {
+        memo.staleStateValuesCount--;
+        if (memo.staleStateValuesCount <= 0) {
+            //to make sure "memo.stateStateValuesCount" doesn't go beyond zero
+            memo.staleStateValuesCount = 0;
+            (0, $80a9035b96e6d6d4$export$18b21b881485961f)(memo, fn);
+        }
+    }
+}
+
+
+
+
+
+
+function $8c8d00d7442872ff$export$2e2bcd8739ae039(fn) {
+    const memo = {
+        //state properties
+        syncSubscriptions: {
+            one: new Set(),
+            two: new Set()
+        },
+        memoSubscriptions: {
+            one: new Set(),
+            two: new Set()
+        },
+        asyncAndRenderSubscriptions: new Set(),
+        activeSubscriptions: "one",
+        value: null,
+        //effect properties
+        firstRun: true,
+        type: "memo",
+        childCount: 0,
+        position: null,
+        level: null,
+        cleanupTree: null,
+        cleanupTreeNodePointer: null,
+        observableSubscriptionSets: new Set(),
+        staleStateValuesCount: 0,
+        sendSignal: (signal)=>(0, $01246e38f2b54ff1$export$2e2bcd8739ae039)(memo, fn, signal)
+    };
+    (0, $1737cf3808fbaf09$export$2e2bcd8739ae039)(memo);
+    (0, $7e9b891dc94e39a9$export$2e2bcd8739ae039)(memo);
+    const cleanupMemo = (0, $80a9035b96e6d6d4$export$18b21b881485961f)(memo, fn);
+    return cleanupMemo ? ()=>(0, $1213c5dc0e5edf1b$export$2e2bcd8739ae039)(cleanupMemo) : ()=>(0, $1213c5dc0e5edf1b$export$2e2bcd8739ae039)(memo);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -502,5 +633,5 @@ function $8643b34629802f21$export$2e2bcd8739ae039(initialValue) {
 var $e9d5482ee1d4bd25$export$2e2bcd8739ae039 = (0, $80e87c3714494da7$export$2e2bcd8739ae039);
 
 
-export {$e9d5482ee1d4bd25$export$2e2bcd8739ae039 as default, $d302ed7d0e97d743$export$2e2bcd8739ae039 as h, $e9d5482ee1d4bd25$re_export$html as html, $f8099572391d5855$export$2e2bcd8739ae039 as adaptEffect, $8643b34629802f21$export$2e2bcd8739ae039 as adaptState, $e9d5482ee1d4bd25$re_export$classMap as classMap, $e9d5482ee1d4bd25$re_export$styleMap as styleMap, $e9d5482ee1d4bd25$re_export$guard as guard, $e9d5482ee1d4bd25$re_export$cache as cache, $e9d5482ee1d4bd25$re_export$repeat as repeat, $e9d5482ee1d4bd25$re_export$live as live, $e9d5482ee1d4bd25$re_export$ifDefined as ifDefined, $e9d5482ee1d4bd25$re_export$ref as ref, $e9d5482ee1d4bd25$re_export$createRef as createRef, $e9d5482ee1d4bd25$re_export$until as until, $e9d5482ee1d4bd25$re_export$asyncAppend as asyncAppend, $e9d5482ee1d4bd25$re_export$asyncReplace as asyncReplace};
+export {$e9d5482ee1d4bd25$export$2e2bcd8739ae039 as default, $d302ed7d0e97d743$export$2e2bcd8739ae039 as h, $e9d5482ee1d4bd25$re_export$html as html, $8643b34629802f21$export$2e2bcd8739ae039 as adaptState, $f8099572391d5855$export$2e2bcd8739ae039 as adaptEffect, $22e520d1cc5cf57a$export$2e2bcd8739ae039 as adaptRenderEffect, $6672f2238cd21cb1$export$2e2bcd8739ae039 as adaptSyncEffect, $8c8d00d7442872ff$export$2e2bcd8739ae039 as adaptMemo, $e9d5482ee1d4bd25$re_export$classMap as classMap, $e9d5482ee1d4bd25$re_export$styleMap as styleMap, $e9d5482ee1d4bd25$re_export$when as when, $e9d5482ee1d4bd25$re_export$choose as choose, $e9d5482ee1d4bd25$re_export$guard as guard, $e9d5482ee1d4bd25$re_export$cache as cache, $e9d5482ee1d4bd25$re_export$keyed as keyed, $e9d5482ee1d4bd25$re_export$map as map, $e9d5482ee1d4bd25$re_export$repeat as repeat, $e9d5482ee1d4bd25$re_export$join as join, $e9d5482ee1d4bd25$re_export$range as range, $e9d5482ee1d4bd25$re_export$live as live, $e9d5482ee1d4bd25$re_export$ifDefined as ifDefined, $e9d5482ee1d4bd25$re_export$ref as ref, $e9d5482ee1d4bd25$re_export$createRef as createRef, $e9d5482ee1d4bd25$re_export$templateContent as templateContent, $e9d5482ee1d4bd25$re_export$unsafeHTML as unsafeHTML, $e9d5482ee1d4bd25$re_export$unsafeSVG as unsafeSVG, $e9d5482ee1d4bd25$re_export$until as until, $e9d5482ee1d4bd25$re_export$asyncAppend as asyncAppend, $e9d5482ee1d4bd25$re_export$asyncReplace as asyncReplace};
 //# sourceMappingURL=nqtui.js.map
