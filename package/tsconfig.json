@@ -1,8 +1,11 @@
 {
-"compilerOptions": {
-  "lib": [
-   "es2018",
-   "dom"
-  ]
- }
+  "compilerOptions": {
+    "lib": ["es2018", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./",
+    "emitDeclarationOnly": true
+  },
+  "include": ["./src/**/*"],
+  "exclude": []
 }
