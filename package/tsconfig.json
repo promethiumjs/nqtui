@@ -1,8 +1,13 @@
 {
-"compilerOptions": {
-  "lib": [
-   "es2018",
-   "dom"
-  ]
- }
+  "compilerOptions": {
+    "target": "es6",
+    "lib": ["es2018", "dom"],
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "./",
+    "emitDeclarationOnly": true,
+    "moduleResolution": "node"
+  },
+  "include": ["./src/**/*"],
+  "exclude": []
 }

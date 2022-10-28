@@ -1,0 +1,1 @@
+{"version":3,"file":"adaptations.d.ts","sourceRoot":"","sources":["../src/adaptations/adaptations.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,UAAU,CAAC;AAC1C,OAAO,EAAE,cAAc,EAAE,MAAM,6BAA6B,CAAC;AAM7D,iBAAS,eAAe,CACtB,uBAAuB,EAAE,cAAc,EACvC,kBAAkB,EAAE,cAAc,QAkBnC;AAED,OAAO,EAAE,eAAe,EAAE,CAAC"}
