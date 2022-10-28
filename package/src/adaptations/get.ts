@@ -2,7 +2,7 @@ import { effectContexts } from "./effectContexts";
 import { State } from "./adaptState/stateTypes";
 import { Effect } from "./adaptEffect/effectTypes";
 
-function subscribe<T>(state: State<T>, effect: Effect) {
+function subscribe<T = any>(state: State<T>, effect: Effect) {
   //get active subscriptions to properly manage sync effects and memos
   const activeSubscriptions = state.activeSubscriptions;
   const type = effect.type;
@@ -26,7 +26,7 @@ function subscribe<T>(state: State<T>, effect: Effect) {
   }
 }
 
-export default function get<T>(state: State<T>) {
+export default function get<T = any>(state: State<T>) {
   const currentEffect = effectContexts[effectContexts.length - 1];
   if (currentEffect) {
     subscribe(state, currentEffect);

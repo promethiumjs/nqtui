@@ -5,6 +5,7 @@ import { State } from "./stateTypes";
 export default function set<T>(state: State<T>, nextValue: T) {
   //get active subscriptions to properly manange sync effects and memos
   const activeSubscriptions = state.activeSubscriptions;
+  //toggle active subscriptions
   state.activeSubscriptions = activeSubscriptions === "one" ? "two" : "one";
 
   //let subscriptions know that they have a stale value so that they can notify their
@@ -18,6 +19,6 @@ export default function set<T>(state: State<T>, nextValue: T) {
   //update themselves and their subscriptions if any
   sendFreshSignals(state, activeSubscriptions);
 
-  //functionality required to ensure that memos are fired right and at the right time in some edge cases
+  //update memo cleanups after all effects have been fired to ensure that no memos are run twice, triggering their effects
   updateMemoCleanups();
 }

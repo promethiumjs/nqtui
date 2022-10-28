@@ -1,31 +1,26 @@
-const changedArray1 = [];
-const changedArray2 = [];
+import { AsyncDirective } from "lit-html/async-directive";
+
+type hAsyncDirective = AsyncDirective & { changed: boolean };
+
+const changedArray1: hAsyncDirective[] = [];
+const changedArray2: hAsyncDirective[] = [];
 let one = true;
 
-export default function queueRevertChangedToTrue(componentAsyncDirective) {
-  if (one) {
-    changedArray1.push(componentAsyncDirective);
+export default function queueRevertChangedToTrue(
+  componentAsyncDirective: hAsyncDirective
+) {
+  const changedArray = one ? changedArray1 : changedArray2;
+  const newOne = one ? false : true;
 
-    if (changedArray1.length === 1) {
-      queueMicrotask(() => {
-        one = false;
-        changedArray1.forEach(
-          (componentAsyncDirective) => (componentAsyncDirective.changed = true)
-        );
-        changedArray1.length = 0;
-      });
-    }
-  } else {
-    changedArray2.push(componentAsyncDirective);
+  changedArray.push(componentAsyncDirective);
 
-    if (changedArray2.length === 1) {
-      queueMicrotask(() => {
-        one = true;
-        changedArray2.forEach(
-          (componentAsyncDirective) => (componentAsyncDirective.changed = true)
-        );
-        changedArray2.length = 0;
-      });
-    }
+  if (changedArray.length === 1) {
+    queueMicrotask(() => {
+      one = newOne;
+      changedArray.forEach(
+        (componentAsyncDirective) => (componentAsyncDirective.changed = true)
+      );
+      changedArray.length = 0;
+    });
   }
 }

@@ -1,5 +1,5 @@
 import { Effect } from "../adaptEffect/effectTypes";
-export declare type State<T> = {
+export declare type State<T = any> = {
     syncSubscriptions: {
         one: Set<Effect>;
         two: Set<Effect>;
@@ -12,6 +12,6 @@ export declare type State<T> = {
     activeSubscriptions: "one" | "two";
     value: T;
 };
-export declare type Getter<T> = () => T;
-export declare type Setter<T> = (nextValue: T) => void;
+export declare type Getter<T = any> = () => T;
+export declare type Setter<T = any> = (nextValue: T) => void;
 //# sourceMappingURL=stateTypes.d.ts.map

@@ -1,4 +1,4 @@
-import { html, h, adaptState, adaptEffect } from "nqtui";
+import { html, h, adaptState, adaptEffect, adaptMemo } from "nqtui";
 import Todo from "./Todo";
 
 const App = () => {

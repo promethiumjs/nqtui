@@ -6,16 +6,10 @@ import {
 } from "lit-html";
 import h from "./h";
 
-/**
- * This is the component type
- */
 export type Component<T = null> = T extends null
   ? (props?: null) => () => TemplateResult
   : (props: T) => () => TemplateResult;
 
-/**
- * This is the render function
- */
 export function render(
   Component: Component<{
     renderContainer: string | HTMLElement | DocumentFragment;

@@ -1,7 +1,15 @@
+import { Getter } from "../adaptState/stateTypes";
 import addAsyncEffect from "./addAsyncEffect";
 import addRenderEffect from "./addRenderEffect";
+import { Effect, EffectFn, ExecuteFn } from "./effectTypes";
 
-export default function sendSignal(effect, execute, fn, depArray, signal) {
+export default function sendSignal(
+  effect: Effect,
+  execute: ExecuteFn,
+  fn: EffectFn,
+  depArray: Getter[],
+  signal: "stale" | "fresh"
+) {
   if (signal === "stale") {
     effect.staleStateValuesCount++;
   } else if (signal === "fresh") {
@@ -15,9 +23,22 @@ export default function sendSignal(effect, execute, fn, depArray, signal) {
 }
 
 const executeMap = {
-  sync: (effect, execute, fn, depArray) => execute(effect, fn, depArray),
-  async: (effect, execute, fn, depArray) =>
-    addAsyncEffect(() => execute(effect, fn, depArray)),
-  render: (effect, execute, fn, depArray) =>
-    addRenderEffect(() => execute(effect, fn, depArray)),
+  sync: (
+    effect: Effect,
+    execute: ExecuteFn,
+    fn: EffectFn,
+    depArray: Getter[]
+  ) => execute(effect, fn, depArray),
+  async: (
+    effect: Effect,
+    execute: ExecuteFn,
+    fn: EffectFn,
+    depArray: Getter[]
+  ) => addAsyncEffect(() => execute(effect, fn, depArray)),
+  render: (
+    effect: Effect,
+    execute: ExecuteFn,
+    fn: EffectFn,
+    depArray: Getter[]
+  ) => addRenderEffect(() => execute(effect, fn, depArray)),
 };

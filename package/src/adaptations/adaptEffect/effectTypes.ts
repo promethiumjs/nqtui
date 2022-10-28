@@ -1,9 +1,11 @@
+import { Getter } from "../adaptState/stateTypes";
+
 export type CleanupTree = Map<number, CleanupTree | Set<() => void>>;
 
 export type Effect = {
   firstRun: boolean;
-  type: "async" | "sync" | "render";
-  tracking: "implicit" | "depArray";
+  type: "async" | "sync" | "render" | "memo";
+  tracking?: "implicit" | "depArray";
   childCount: number;
   position: number | null;
   level: number | null;
@@ -11,6 +13,7 @@ export type Effect = {
   cleanupTreeNodePointer: number[];
   observableSubscriptionSets: Set<Set<Effect>>;
   staleStateValuesCount: number;
+  returnValue?: any;
   sendSignal: (signal: "stale" | "fresh") => void;
 };
 
@@ -19,7 +22,16 @@ export type EffectOptions = {
   isComponent?: boolean;
 };
 
-export type EffectFn<T = any> = (
-  returnValue?: T,
+export type EffectFn<R = any> = (
+  returnValue?: R,
   argsArray?: any[]
 ) => any | void;
+
+export type ExecuteFn =
+  | ((effect: Effect, fn: EffectFn<any>) => () => void)
+  | ((
+      effect: Effect,
+      fn: EffectFn<any>,
+      depArray: Getter<any>[],
+      options?: EffectOptions
+    ) => readonly [() => void, () => any[], any[]] | (() => void));

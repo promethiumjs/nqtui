@@ -1,24 +1,24 @@
 import {html as $e9d5482ee1d4bd25$re_export$html, render as $6oBH7$render, noChange as $6oBH7$noChange} from "lit-html";
 import {classMap as $e9d5482ee1d4bd25$re_export$classMap} from "lit-html/directives/class-map.js";
 import {styleMap as $e9d5482ee1d4bd25$re_export$styleMap} from "lit-html/directives/style-map.js";
-import {when as $e9d5482ee1d4bd25$re_export$when} from "lit-html/directives/when.js";
-import {choose as $e9d5482ee1d4bd25$re_export$choose} from "lit-html/directives/choose.js";
-import {map as $e9d5482ee1d4bd25$re_export$map} from "lit-html/directives/map.js";
-import {repeat as $e9d5482ee1d4bd25$re_export$repeat} from "lit-html/directives/repeat.js";
-import {join as $e9d5482ee1d4bd25$re_export$join} from "lit-html/directives/join.js";
-import {range as $e9d5482ee1d4bd25$re_export$range} from "lit-html/directives/range.js";
-import {ifDefined as $e9d5482ee1d4bd25$re_export$ifDefined} from "lit-html/directives/if-defined.js";
-import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
-import {keyed as $e9d5482ee1d4bd25$re_export$keyed} from "lit-html/directives/keyed.js";
 import {guard as $e9d5482ee1d4bd25$re_export$guard} from "lit-html/directives/guard.js";
+import {cache as $e9d5482ee1d4bd25$re_export$cache} from "lit-html/directives/cache.js";
+import {repeat as $e9d5482ee1d4bd25$re_export$repeat} from "lit-html/directives/repeat.js";
 import {live as $e9d5482ee1d4bd25$re_export$live} from "lit-html/directives/live.js";
+import {ifDefined as $e9d5482ee1d4bd25$re_export$ifDefined} from "lit-html/directives/if-defined.js";
 import {ref as $e9d5482ee1d4bd25$re_export$ref, createRef as $e9d5482ee1d4bd25$re_export$createRef} from "lit-html/directives/ref.js";
-import {templateContent as $e9d5482ee1d4bd25$re_export$templateContent} from "lit-html/directives/template-content.js";
-import {unsafeHTML as $e9d5482ee1d4bd25$re_export$unsafeHTML} from "lit-html/directives/unsafe-html.js";
-import {unsafeSVG as $e9d5482ee1d4bd25$re_export$unsafeSVG} from "lit-html/directives/unsafe-svg.js";
 import {until as $e9d5482ee1d4bd25$re_export$until} from "lit-html/directives/until.js";
 import {asyncAppend as $e9d5482ee1d4bd25$re_export$asyncAppend} from "lit-html/directives/async-append.js";
 import {asyncReplace as $e9d5482ee1d4bd25$re_export$asyncReplace} from "lit-html/directives/async-replace.js";
+import {when as $e9d5482ee1d4bd25$re_export$when} from "lit-html/directives/when.js";
+import {choose as $e9d5482ee1d4bd25$re_export$choose} from "lit-html/directives/choose.js";
+import {map as $e9d5482ee1d4bd25$re_export$map} from "lit-html/directives/map.js";
+import {join as $e9d5482ee1d4bd25$re_export$join} from "lit-html/directives/join.js";
+import {range as $e9d5482ee1d4bd25$re_export$range} from "lit-html/directives/range.js";
+import {keyed as $e9d5482ee1d4bd25$re_export$keyed} from "lit-html/directives/keyed.js";
+import {templateContent as $e9d5482ee1d4bd25$re_export$templateContent} from "lit-html/directives/template-content.js";
+import {unsafeHTML as $e9d5482ee1d4bd25$re_export$unsafeHTML} from "lit-html/directives/unsafe-html.js";
+import {unsafeSVG as $e9d5482ee1d4bd25$re_export$unsafeSVG} from "lit-html/directives/unsafe-svg.js";
 import {AsyncDirective as $6oBH7$AsyncDirective, directive as $6oBH7$directive} from "lit-html/async-directive.js";
 
 
@@ -27,21 +27,14 @@ const $04eedf882f5a48d8$var$changedArray1 = [];
 const $04eedf882f5a48d8$var$changedArray2 = [];
 let $04eedf882f5a48d8$var$one = true;
 function $04eedf882f5a48d8$export$2e2bcd8739ae039(componentAsyncDirective1) {
-    if ($04eedf882f5a48d8$var$one) {
-        $04eedf882f5a48d8$var$changedArray1.push(componentAsyncDirective1);
-        if ($04eedf882f5a48d8$var$changedArray1.length === 1) queueMicrotask(()=>{
-            $04eedf882f5a48d8$var$one = false;
-            $04eedf882f5a48d8$var$changedArray1.forEach((componentAsyncDirective)=>componentAsyncDirective.changed = true);
-            $04eedf882f5a48d8$var$changedArray1.length = 0;
-        });
-    } else {
-        $04eedf882f5a48d8$var$changedArray2.push(componentAsyncDirective1);
-        if ($04eedf882f5a48d8$var$changedArray2.length === 1) queueMicrotask(()=>{
-            $04eedf882f5a48d8$var$one = true;
-            $04eedf882f5a48d8$var$changedArray2.forEach((componentAsyncDirective)=>componentAsyncDirective.changed = true);
-            $04eedf882f5a48d8$var$changedArray2.length = 0;
-        });
-    }
+    const changedArray = $04eedf882f5a48d8$var$one ? $04eedf882f5a48d8$var$changedArray1 : $04eedf882f5a48d8$var$changedArray2;
+    const newOne = $04eedf882f5a48d8$var$one ? false : true;
+    changedArray.push(componentAsyncDirective1);
+    if (changedArray.length === 1) queueMicrotask(()=>{
+        $04eedf882f5a48d8$var$one = newOne;
+        changedArray.forEach((componentAsyncDirective)=>componentAsyncDirective.changed = true);
+        changedArray.length = 0;
+    });
 }
 
 
@@ -49,25 +42,16 @@ const $1ff481cd88aa17d5$var$renderArray1 = [];
 const $1ff481cd88aa17d5$var$renderArray2 = [];
 let $1ff481cd88aa17d5$var$one = true;
 function $1ff481cd88aa17d5$export$fa7f552cb3a457a6(componentAsyncDirective1, htmlTemplateResult) {
-    if ($1ff481cd88aa17d5$var$one) {
-        $1ff481cd88aa17d5$var$renderArray1.push(componentAsyncDirective1);
-        if ($1ff481cd88aa17d5$var$renderArray1.length === 1) queueMicrotask(()=>{
-            $1ff481cd88aa17d5$var$one = false;
-            $1ff481cd88aa17d5$var$renderArray1.forEach((componentAsyncDirective)=>{
-                componentAsyncDirective.setValue(htmlTemplateResult);
-            });
-            $1ff481cd88aa17d5$var$renderArray1.length = 0;
+    const renderArray = $1ff481cd88aa17d5$var$one ? $1ff481cd88aa17d5$var$renderArray1 : $1ff481cd88aa17d5$var$renderArray2;
+    const newOne = $1ff481cd88aa17d5$var$one ? false : true;
+    renderArray.push(componentAsyncDirective1);
+    if (renderArray.length === 1) queueMicrotask(()=>{
+        $1ff481cd88aa17d5$var$one = newOne;
+        renderArray.forEach((componentAsyncDirective)=>{
+            componentAsyncDirective.setValue(htmlTemplateResult);
         });
-    } else {
-        $1ff481cd88aa17d5$var$renderArray2.push(componentAsyncDirective1);
-        if ($1ff481cd88aa17d5$var$renderArray2.length === 1) queueMicrotask(()=>{
-            $1ff481cd88aa17d5$var$one = true;
-            $1ff481cd88aa17d5$var$renderArray2.forEach((componentAsyncDirective)=>{
-                componentAsyncDirective.setValue(htmlTemplateResult);
-            });
-            $1ff481cd88aa17d5$var$renderArray2.length = 0;
-        });
-    }
+        renderArray.length = 0;
+    });
 }
 
 
@@ -115,44 +99,67 @@ const $cf23c9ad92c46644$export$24642de4c13f18dd = [];
 
 
 function $ceea39f99f315fb7$var$implicitDependencyExecuteFn(effect, fn) {
-    //to enable children effects to obtain correct positions upon recreation
+    //set `childCount` back to zero to enable children effects to obtain correct positions upon recreation
     effect.childCount = 0;
+    //fire cleanups make sure proceedings go smoothly
     const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
     cleanupSet.forEach((cleanup)=>{
         cleanup();
     });
     cleanupSet.clear();
+    //push effect onto context to enable tracking by state and memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
+    //call effect with previous return value
     const fnReturnValue = fn(effect.returnValue);
+    //create `returnValueCleanup` to be called on next run of effect
     const returnValueCleanup = ()=>{
-        if (typeof fnReturnValue === "function") effect.returnValue = fnReturnValue();
+        if (typeof fnReturnValue === "function") //extract new `returnValue` from effect's returned function
+        effect.returnValue = fnReturnValue();
     };
+    //add cleanup to obtain new return value and remove effect from all old subscriptions
     cleanupSet.add(returnValueCleanup).add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
+    //remove effect from context to disable tracking by state and memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
+    //return cleanup function for effect and its descendants
     return ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect);
 }
 function $ceea39f99f315fb7$var$dependencyArrayExecuteFn(effect, fn, depArray, options = {}) {
     //to enable children effects to obtain correct positions upon recreation
     effect.childCount = 0;
+    //fire cleanups make sure proceedings go smoothly
     const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
     cleanupSet.forEach((cleanup)=>{
         cleanup();
     });
     cleanupSet.clear();
+    //push effect onto context to enable tracking by state and memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
+    //set tracking to "implicit" to enable tracking by state and memos in `depArray`
     effect.tracking = "implicit";
     const argsArray = depArray.map((state)=>state());
+    //set tracking back to "depArray" to disable other forms of implicit tracking
+    //(only allow state and memos in `depArray` to track effect)
     effect.tracking = "depArray";
+    //if effect is supposed to be deferred, do nothing on the first run
     if (effect.firstRun && options.defer) effect.firstRun = false;
     else {
+        //call effect with previous return value and previous state values of tracking state and memos in an `argsArray`
         const fnReturnValue = fn(effect.returnValue, argsArray);
+        //create `returnValueCleanup` to be called on next run of effect
         const returnValueCleanup = ()=>{
-            if (typeof fnReturnValue === "function") effect.returnValue = fnReturnValue();
+            if (typeof fnReturnValue === "function") //extract new `returnValue` from effect's returned function
+            effect.returnValue = fnReturnValue();
         };
+        //add cleanup to obtain new return value
         cleanupSet.add(returnValueCleanup);
     }
+    //add cleanup to remove effect from all old subscriptions
     cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
+    //remove effect from context to disable tracking by state and memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
+    //if effect is a component-wrapping effect, return cleanup function, function to `updateEffectDependencies` outside
+    //normal flow, and `argsArray`
+    //if not, return just the cleanup function
     const returnExp = options.isComponent ? [
         ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect),
         ()=>$ceea39f99f315fb7$var$updateEffectDependencies(effect, depArray),
@@ -186,21 +193,14 @@ const $0728fecdbf281315$var$asyncEffectAndCleanupArray1 = [];
 const $0728fecdbf281315$var$asyncEffectAndCleanupArray2 = [];
 let $0728fecdbf281315$var$one = true;
 function $0728fecdbf281315$export$2e2bcd8739ae039(executeFn1) {
-    if ($0728fecdbf281315$var$one) {
-        $0728fecdbf281315$var$asyncEffectAndCleanupArray1.push(executeFn1);
-        if ($0728fecdbf281315$var$asyncEffectAndCleanupArray1.length === 1) setTimeout(()=>{
-            $0728fecdbf281315$var$one = false;
-            $0728fecdbf281315$var$asyncEffectAndCleanupArray1.forEach((executeFn)=>executeFn());
-            $0728fecdbf281315$var$asyncEffectAndCleanupArray1.length = 0;
-        });
-    } else {
-        $0728fecdbf281315$var$asyncEffectAndCleanupArray2.push(executeFn1);
-        if ($0728fecdbf281315$var$asyncEffectAndCleanupArray2.length === 1) setTimeout(()=>{
-            $0728fecdbf281315$var$one = true;
-            $0728fecdbf281315$var$asyncEffectAndCleanupArray2.forEach((executeFn)=>executeFn());
-            $0728fecdbf281315$var$asyncEffectAndCleanupArray2.length = 0;
-        });
-    }
+    const asyncEffectAndCleanupArray = $0728fecdbf281315$var$one ? $0728fecdbf281315$var$asyncEffectAndCleanupArray1 : $0728fecdbf281315$var$asyncEffectAndCleanupArray2;
+    const newOne = $0728fecdbf281315$var$one ? false : true;
+    asyncEffectAndCleanupArray.push(executeFn1);
+    if (asyncEffectAndCleanupArray.length === 1) setTimeout(()=>{
+        $0728fecdbf281315$var$one = newOne;
+        asyncEffectAndCleanupArray.forEach((executeFn)=>executeFn());
+        asyncEffectAndCleanupArray.length = 0;
+    });
 }
 
 
@@ -208,21 +208,14 @@ const $f0832425b32a585f$var$renderEffectArray1 = [];
 const $f0832425b32a585f$var$renderEffectArray2 = [];
 let $f0832425b32a585f$var$one = true;
 function $f0832425b32a585f$export$2e2bcd8739ae039(executeFn1) {
-    if ($f0832425b32a585f$var$one) {
-        $f0832425b32a585f$var$renderEffectArray1.push(executeFn1);
-        if ($f0832425b32a585f$var$renderEffectArray1.length === 1) queueMicrotask(()=>{
-            $f0832425b32a585f$var$one = false;
-            $f0832425b32a585f$var$renderEffectArray1.forEach((executeFn)=>executeFn());
-            $f0832425b32a585f$var$renderEffectArray1.length = 0;
-        });
-    } else {
-        $f0832425b32a585f$var$renderEffectArray2.push(executeFn1);
-        if ($f0832425b32a585f$var$renderEffectArray2.length === 1) queueMicrotask(()=>{
-            $f0832425b32a585f$var$one = true;
-            $f0832425b32a585f$var$renderEffectArray2.forEach((executeFn)=>executeFn());
-            $f0832425b32a585f$var$renderEffectArray2.length = 0;
-        });
-    }
+    const renderEffectArray = $f0832425b32a585f$var$one ? $f0832425b32a585f$var$renderEffectArray1 : $f0832425b32a585f$var$renderEffectArray2;
+    const newOne = $f0832425b32a585f$var$one ? false : true;
+    renderEffectArray.push(executeFn1);
+    if (renderEffectArray.length === 1) queueMicrotask(()=>{
+        $f0832425b32a585f$var$one = newOne;
+        renderEffectArray.forEach((executeFn)=>executeFn());
+        renderEffectArray.length = 0;
+    });
 }
 
 
@@ -274,7 +267,7 @@ function $6a3ab3c6cee3c885$export$2e2bcd8739ae039(effect) {
             effect.cleanupTreeNodePointer[effectCleanupTreeNodePointerLength - 2] = effect.position;
         }
     } else {
-        //do this for the topmost parent effect of the tree
+        //do this for the topmost parent effect (father of the whole tree)
         effect.level = 1;
         effect.position = 1;
         effect.cleanupTreeNodePointer = [
@@ -286,15 +279,15 @@ function $6a3ab3c6cee3c885$export$2e2bcd8739ae039(effect) {
 
 
 function $4e86dcede83c4655$export$2e2bcd8739ae039(effect) {
-    //create variable to store `cleanupMap` of effect and initially set the variable to the cleanup tree
-    let cleanupMap = effect.cleanupTree;
-    //extract the `cleanupMap` from the `cleanupTree` and set it to the `cleanupMap` variable
+    //create variable to store `cleanupNode` of effect and initially set the variable to the cleanup tree
+    let cleanupNode = effect.cleanupTree;
+    //extract the `cleanupNode` from the `cleanupTree` and set it to the `cleanupNode` variable
     effect.cleanupTreeNodePointer.forEach((part)=>{
-        if (!cleanupMap.get(part)) cleanupMap.set(part, new Map());
-        cleanupMap = cleanupMap.get(part);
+        if (!cleanupNode.get(part)) cleanupNode.set(part, new Map());
+        cleanupNode = cleanupNode.get(part);
     });
     //set cleanup set for effect if it doesn't already exist in the cleanup map
-    if (!cleanupMap.get(0)) cleanupMap.set(0, new Set());
+    if (!cleanupNode.get(0)) cleanupNode.set(0, new Set());
 }
 
 
@@ -324,12 +317,18 @@ function $3d1734ecfb3ab0e5$export$2e2bcd8739ae039(type, fn, depArray) {
         observableSubscriptionSets: new Set(),
         //used to track the number of state values of states currently tracking the effect that are stale
         staleStateValuesCount: 0,
+        //used to store the return value of the previous effect execution
+        returnValue: null,
         //used to notify the effect when a state value of state currently tracking the effect turns
         //stale or freshens up after turning stale
         sendSignal: (signal)=>(0, $6d9dc4dd8bec4bc7$export$2e2bcd8739ae039)(effect, execute, fn, depArray, signal)
     };
+    //create `cleanupTreeNodePointer` for effect and create `cleanupTree` for effect tree is this is the
+    //topmost parent effect (father of the whole tree)
     (0, $6a3ab3c6cee3c885$export$2e2bcd8739ae039)(effect);
+    //create `cleanupSet` for effect if it doesn't already exist
     (0, $4e86dcede83c4655$export$2e2bcd8739ae039)(effect);
+    //return effect `execute` function and effect itself
     return [
         execute,
         effect
@@ -350,19 +349,41 @@ class $d7efe1102037d5ee$var$$ extends (0, $6oBH7$AsyncDirective) {
     constructor(partInfo){
         super(partInfo);
         //boolean flag to enable initialization of the component in the update method.
-        this.initialization = true;
+        this.updateFlag = "initialize";
     }
-    initializeComponent(Component1, parent, props) {
+    disconnected() {
+        this.cleanups.forEach((cleanup)=>cleanup());
+    }
+    //normal render process
+    externalRender(props) {
+        for(const prop in props)this.props[prop] = props[prop];
+        return this.render();
+    }
+    //first time initialization of component
+    initialize(props, part, Component1) {
+        this.props = props;
+        return this.initializeComponent(Component1, part.parentNode, this.props);
+    }
+    initializeComponent(Component2, parent, props) {
+        //initialize cleanups for component. this includes:
+        //1. general component cleanup for all its effects and memos
+        //2. cleanup of the effect created from the function (that returns a template result) the component returns
         this.cleanups = [];
+        //store the function (that returns a template result) the component returns in `htmlFn` for later us
         let htmlFn;
-        this.cleanups.push((0, $dd1a9c42706c6616$export$2e2bcd8739ae039)(()=>htmlFn = Component1(props, parent), []));
-        const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1]] = (0, $dd1a9c42706c6616$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>(0, $1ff481cd88aa17d5$export$fa7f552cb3a457a6)(this, htmlTemplateResult), [
+        //initialize component effects and memos and store the cleanup (1st cleanup)
+        this.cleanups.push((0, $dd1a9c42706c6616$export$2e2bcd8739ae039)(()=>htmlFn = Component2(props, parent), []));
+        //create effect the re-runs component return function and renders the template result upon any state change
+        const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1], ] = (0, $dd1a9c42706c6616$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>(0, $1ff481cd88aa17d5$export$fa7f552cb3a457a6)(this, htmlTemplateResult), [
             htmlFn
         ], {
             defer: true,
             isComponent: true
         });
+        //store 2nd cleanup
         this.cleanups.push(ComponentCleanup);
+        //store reference to function used to update component return function dependencies and return template
+        //result for rendering
         this.ComponentDependencyUpdate = ComponentDependencyUpdate;
         this.Component = ()=>{
             //check "changed" flag to prevent multiple redundant re-rendering of components.
@@ -376,20 +397,15 @@ class $d7efe1102037d5ee$var$$ extends (0, $6oBH7$AsyncDirective) {
         //initialize "changed" flag as true.
         this.changed = true;
         //prevent re-initialization of component on subsequent renders after initialization.
-        this.initialization = false;
+        this.updateFlag = "externalRender";
         return htmlTemplateResult1;
     }
-    disconnected() {
-        this.cleanups.forEach((cleanup)=>cleanup());
+    update(part, [Component3, props]) {
+        //initialize component for the first time or go through normal rendering processes based on the state of `updateFlag`
+        return this[this.updateFlag](props, part, Component3);
     }
-    update(part, [Component2, props]) {
-        //initialize component on first render
-        if (this.initialization) {
-            this.props = props;
-            return this.initializeComponent(Component2, part.parentNode, this.props);
-        }
-        for(const prop in props)this.props[prop] = props[prop];
-        return this.render();
+    reconnected() {
+        this.updateFlag = "initialize";
     }
     render() {
         return this.Component();
@@ -478,6 +494,7 @@ function $6dc9040d05697a8e$export$436b218e987b82fc(state, activeSubscriptions) {
 function $9c8b7ccddd7561d1$export$2e2bcd8739ae039(state, nextValue) {
     //get active subscriptions to properly manange sync effects and memos
     const activeSubscriptions = state.activeSubscriptions;
+    //toggle active subscriptions
     state.activeSubscriptions = activeSubscriptions === "one" ? "two" : "one";
     //let subscriptions know that they have a stale value so that they can notify their
     //subscriptions if any
@@ -487,7 +504,7 @@ function $9c8b7ccddd7561d1$export$2e2bcd8739ae039(state, nextValue) {
     //let subscriptions know that their stale value has been updated so that they can notify and
     //update themselves and their subscriptions if any
     (0, $6dc9040d05697a8e$export$436b218e987b82fc)(state, activeSubscriptions);
-    //functionality required to ensure that memos are fired right and at the right time in some edge cases
+    //update memo cleanups after all effects have been fired to ensure that no memos are run twice, triggering their effects
     (0, $07cf289615170a3d$export$916777485b2b3993)();
 }
 
@@ -528,7 +545,7 @@ function $9873fc45146bd570$export$2e2bcd8739ae039(initialValue) {
 
 function $280590d7df928610$export$2e2bcd8739ae039(fn, depArray, options) {
     const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("async", fn, depArray);
-    //execute effect asynchronously before next screen paint
+    //execute effect asynchronously after next screen paint
     setTimeout(()=>execute(effect, fn, depArray, options));
 }
 
@@ -536,7 +553,7 @@ function $280590d7df928610$export$2e2bcd8739ae039(fn, depArray, options) {
 
 function $c81bb8edf610f60a$export$2e2bcd8739ae039(fn, depArray, options) {
     const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("render", fn, depArray);
-    //execute effect asynchronously after next screen paint
+    //execute effect asynchronously before next screen paint
     queueMicrotask(()=>execute(effect, fn, depArray, options));
 }
 
@@ -548,33 +565,49 @@ function $c81bb8edf610f60a$export$2e2bcd8739ae039(fn, depArray, options) {
 
 
 function $167a1cc90c461710$export$e5bb50160f277516(memo) {
+    //get active subscriptions to properly manange sync effects and memos
     const activeSubscriptions = memo.activeSubscriptions;
+    //toggle active subscriptions
     memo.activeSubscriptions = activeSubscriptions === "one" ? "two" : "one";
+    //let subscriptions know that they have a stale value so that they can notify their
+    //subscriptions if any
     (0, $6dc9040d05697a8e$export$ac2bda8cd89c2590)(memo, activeSubscriptions);
 }
 function $167a1cc90c461710$export$18b21b881485961f(memo, fn) {
-    //to enable children effects to obtain correct positions upon recreation
+    //set `childCount` back to zero to enable children effects to obtain correct positions upon recreation
     memo.childCount = 0;
+    //fire cleanups make sure proceedings go smoothly
     const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(memo).get(0);
     for (const cleanup of cleanupSet){
-        if (cleanup.type === "memo") return cleanup;
+        //if cleanup is a memo, return it and exit out of function because this means that if the function continues to run
+        //the memo would potentially run twice and re-trigger all of its dependents
+        if (typeof cleanup !== "function") return cleanup;
         cleanup();
     }
     cleanupSet.clear();
+    //push memo onto context to enable tracking by state and other memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(memo);
     memo.value = fn();
     if (memo.firstRun) {
         memo.firstRun = false;
+        //on first run, add cleanup function to cleanupSet
         cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(memo));
     } else {
+        //else add memo to cleanupSet so that the check that runs inside the for of loop above is able to effectively do its job
+        //and prevent memos from running twice, especially when nested in effects that also depend on them or in other "edge" cases
         cleanupSet.add(memo);
+        //then `queueCleanupUpdates` for later for the same reasons mentioned in the comment above
         (0, $07cf289615170a3d$export$1b3c45eb1fa5da02)(()=>{
             cleanupSet.clear();
             cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(memo));
         });
     }
+    //remove memo from context to disable tracking by state and other memos
     (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
+    //get `activeSubscriptions` as the opposite for `memo.activeSubscriptions` because it recently toggled in `sendStaleNotifications`
     const activeSubscriptions = memo.activeSubscriptions === "one" ? "two" : "one";
+    //let subscriptions know that their stale value has been updated so that they can notify and
+    //update themselves and their subscriptions if any
     (0, $6dc9040d05697a8e$export$436b218e987b82fc)(memo, activeSubscriptions);
 }
 

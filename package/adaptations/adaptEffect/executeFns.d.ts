@@ -1,6 +1,7 @@
-import { EffectOptions } from "./effectTypes";
-declare function implicitDependencyExecuteFn(effect: any, fn: any): () => void;
-declare function dependencyArrayExecuteFn(effect: any, fn: any, depArray: any, options?: EffectOptions): any[] | (() => void);
+import { Effect, EffectFn, EffectOptions } from "./effectTypes";
+import { Getter } from "../adaptState/stateTypes";
+declare function implicitDependencyExecuteFn(effect: Effect, fn: EffectFn): () => void;
+declare function dependencyArrayExecuteFn(effect: Effect, fn: EffectFn, depArray: Getter[], options?: EffectOptions): readonly [() => void, () => any[], any[]] | (() => void);
 declare const executeFns: {
     implicit: typeof implicitDependencyExecuteFn;
     depArray: typeof dependencyArrayExecuteFn;

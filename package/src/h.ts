@@ -11,8 +11,8 @@ import { ChildPart, noChange, TemplateResult } from "lit-html";
 import { Component } from "./render";
 
 class $ extends AsyncDirective {
-  initialization: boolean;
-  cleanups: (() => void)[];
+  updateFlag: "initialize" | "externalRender";
+  cleanups: any[];
   ComponentDependencyUpdate: any;
   Component: () => TemplateResult;
   changed: boolean;
@@ -22,7 +22,31 @@ class $ extends AsyncDirective {
     super(partInfo);
 
     //boolean flag to enable initialization of the component in the update method.
-    this.initialization = true;
+    this.updateFlag = "initialize";
+  }
+
+  protected disconnected(): void {
+    this.cleanups.forEach((cleanup) => cleanup());
+  }
+
+  //normal render process
+  externalRender(props: any) {
+    for (const prop in props) {
+      this.props[prop] = props[prop];
+    }
+
+    return this.render();
+  }
+
+  //first time initialization of component
+  initialize(
+    props: any,
+    part: ChildPart,
+    Component: (props: any, parent: Node) => () => TemplateResult
+  ) {
+    this.props = props;
+
+    return this.initializeComponent(Component, part.parentNode, this.props);
   }
 
   initializeComponent(
@@ -30,21 +54,34 @@ class $ extends AsyncDirective {
     parent: Node,
     props: any
   ) {
+    //initialize cleanups for component. this includes:
+    //1. general component cleanup for all its effects and memos
+    //2. cleanup of the effect created from the function (that returns a template result) the component returns
     this.cleanups = [];
 
+    //store the function (that returns a template result) the component returns in `htmlFn` for later us
     let htmlFn: () => TemplateResult;
+    //initialize component effects and memos and store the cleanup (1st cleanup)
     this.cleanups.push(
       adaptSyncEffect(() => (htmlFn = Component(props, parent)), [])
     );
 
-    const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult]] =
-      adaptSyncEffect(
-        (_, [htmlTemplateResult]) => renderComponent(this, htmlTemplateResult),
-        [htmlFn],
-        { defer: true, isComponent: true }
-      );
+    //create effect the re-runs component return function and renders the template result upon any state change
+    const [
+      ComponentCleanup,
+      ComponentDependencyUpdate,
+      [htmlTemplateResult],
+    ]: any = adaptSyncEffect(
+      (_, [htmlTemplateResult]: [TemplateResult]) =>
+        renderComponent(this, htmlTemplateResult),
+      [htmlFn],
+      { defer: true, isComponent: true }
+    );
 
+    //store 2nd cleanup
     this.cleanups.push(ComponentCleanup);
+    //store reference to function used to update component return function dependencies and return template
+    //result for rendering
     this.ComponentDependencyUpdate = ComponentDependencyUpdate;
 
     this.Component = () => {
@@ -64,13 +101,9 @@ class $ extends AsyncDirective {
     //initialize "changed" flag as true.
     this.changed = true;
     //prevent re-initialization of component on subsequent renders after initialization.
-    this.initialization = false;
+    this.updateFlag = "externalRender";
 
     return htmlTemplateResult;
-  }
-
-  disconnected() {
-    this.cleanups.forEach((cleanup) => cleanup());
   }
 
   update(
@@ -80,17 +113,12 @@ class $ extends AsyncDirective {
       any
     ]
   ) {
-    //initialize component on first render
-    if (this.initialization) {
-      this.props = props;
-      return this.initializeComponent(Component, part.parentNode, this.props);
-    }
+    //initialize component for the first time or go through normal rendering processes based on the state of `updateFlag`
+    return this[this.updateFlag](props, part, Component);
+  }
 
-    for (const prop in props) {
-      this.props[prop] = props[prop];
-    }
-
-    return this.render();
+  protected reconnected(): void {
+    this.updateFlag = "initialize";
   }
 
   render() {

@@ -36,14 +36,20 @@ export default function createEffect<T>(
     observableSubscriptionSets: new Set(),
     //used to track the number of state values of states currently tracking the effect that are stale
     staleStateValuesCount: 0,
+    //used to store the return value of the previous effect execution
+    returnValue: null,
     //used to notify the effect when a state value of state currently tracking the effect turns
     //stale or freshens up after turning stale
     sendSignal: (signal: "fresh" | "stale"): void =>
       sendSignal(effect, execute, fn, depArray, signal),
   };
 
+  //create `cleanupTreeNodePointer` for effect and create `cleanupTree` for effect tree is this is the
+  //topmost parent effect (father of the whole tree)
   setInitialParameters(effect);
+  //create `cleanupSet` for effect if it doesn't already exist
   setCleanupSet(effect);
 
-  return [execute, effect];
+  //return effect `execute` function and effect itself
+  return [execute, effect] as const;
 }

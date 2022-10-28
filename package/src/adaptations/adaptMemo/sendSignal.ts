@@ -1,9 +1,14 @@
+import { Memo } from "./memoTypes";
 import {
   sendStaleNotifications,
   updateValueAndSendFreshNotifications,
 } from "./notifyAndUpdate";
 
-export default function sendSignal(memo, fn, signal) {
+export default function sendSignal(
+  memo: Memo,
+  fn: () => any,
+  signal: "stale" | "fresh"
+) {
   if (signal === "stale") {
     memo.staleStateValuesCount++;
     if (memo.staleStateValuesCount === 1) {

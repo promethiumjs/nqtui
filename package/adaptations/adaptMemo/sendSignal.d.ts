@@ -1,2 +1,3 @@
-export default function sendSignal(memo: any, fn: any, signal: any): void;
+import { Memo } from "./memoTypes";
+export default function sendSignal(memo: Memo, fn: () => any, signal: "stale" | "fresh"): void;
 //# sourceMappingURL=sendSignal.d.ts.map

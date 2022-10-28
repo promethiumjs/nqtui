@@ -3,9 +3,11 @@ import get from "../get";
 import setInitialParameters from "../setInitialParameters";
 import setCleanupSet from "../setCleanupSet";
 import { updateValueAndSendFreshNotifications } from "./notifyAndUpdate";
+import { Memo } from "./memoTypes";
+import { Getter } from "../adaptState/stateTypes";
 
-export default function adaptMemo(fn) {
-  const memo = {
+export default function adaptMemo<T = any>(fn: () => T): Getter<T> {
+  const memo: Memo = {
     //state properties
     syncSubscriptions: {
       one: new Set(),
@@ -33,7 +35,8 @@ export default function adaptMemo(fn) {
 
   setInitialParameters(memo);
   setCleanupSet(memo);
+
   const cleanupMemo = updateValueAndSendFreshNotifications(memo, fn);
 
-  return cleanupMemo ? () => get(cleanupMemo) : () => get(memo);
+  return cleanupMemo ? () => get<T>(cleanupMemo) : () => get<T>(memo);
 }

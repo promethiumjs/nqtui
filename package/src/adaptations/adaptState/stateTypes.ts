@@ -1,6 +1,6 @@
 import { Effect } from "../adaptEffect/effectTypes";
 
-export type State<T> = {
+export type State<T = any> = {
   syncSubscriptions: {
     one: Set<Effect>;
     two: Set<Effect>;
@@ -14,5 +14,5 @@ export type State<T> = {
   value: T;
 };
 
-export type Getter<T> = () => T;
-export type Setter<T> = (nextValue: T) => void;
+export type Getter<T = any> = () => T;
+export type Setter<T = any> = (nextValue: T) => void;

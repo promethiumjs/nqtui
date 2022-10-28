@@ -1,10 +1,8 @@
 import get from "../get";
 import set from "./set";
-import { State, Getter, Setter } from "./stateTypes";
+import { State } from "./stateTypes";
 
-export default function adaptState<T = any>(
-  initialValue: T
-): [() => T, (nextValue: T) => void] {
+export default function adaptState<T = any>(initialValue?: T) {
   //create state object with three sets of subscriptions
   const state: State<T> = {
     //one for sync effect subscriptions
@@ -29,8 +27,8 @@ export default function adaptState<T = any>(
     value: initialValue,
   };
 
-  const getter: Getter<T> = () => get(state);
-  const setter: Setter<T> = (nextValue: T) => set(state, nextValue);
+  const getter = () => get(state);
+  const setter = (nextValue: T) => set(state, nextValue);
 
-  return [getter, setter];
+  return [getter, setter] as const;
 }

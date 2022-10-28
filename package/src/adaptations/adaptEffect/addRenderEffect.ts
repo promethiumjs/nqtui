@@ -1,27 +1,20 @@
+import { ExecuteFn } from "./effectTypes";
+
 const renderEffectArray1 = [];
 const renderEffectArray2 = [];
 let one = true;
 
-export default function addRenderEffect(executeFn) {
-  if (one) {
-    renderEffectArray1.push(executeFn);
+export default function addRenderEffect(executeFn: ExecuteFn) {
+  const renderEffectArray = one ? renderEffectArray1 : renderEffectArray2;
+  const newOne = one ? false : true;
 
-    if (renderEffectArray1.length === 1) {
-      queueMicrotask(() => {
-        one = false;
-        renderEffectArray1.forEach((executeFn) => executeFn());
-        renderEffectArray1.length = 0;
-      });
-    }
-  } else {
-    renderEffectArray2.push(executeFn);
+  renderEffectArray.push(executeFn);
 
-    if (renderEffectArray2.length === 1) {
-      queueMicrotask(() => {
-        one = true;
-        renderEffectArray2.forEach((executeFn) => executeFn());
-        renderEffectArray2.length = 0;
-      });
-    }
+  if (renderEffectArray.length === 1) {
+    queueMicrotask(() => {
+      one = newOne;
+      renderEffectArray.forEach((executeFn) => executeFn());
+      renderEffectArray.length = 0;
+    });
   }
 }

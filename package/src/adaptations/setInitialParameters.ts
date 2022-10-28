@@ -35,7 +35,7 @@ export default function setInitialParameters(effect: Effect) {
         effect.position;
     }
   } else {
-    //do this for the topmost parent effect of the tree
+    //do this for the topmost parent effect (father of the whole tree)
     effect.level = 1;
     effect.position = 1;
     effect.cleanupTreeNodePointer = [1];

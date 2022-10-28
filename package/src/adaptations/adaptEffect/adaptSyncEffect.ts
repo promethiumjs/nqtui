@@ -2,14 +2,6 @@ import { Getter } from "../adaptState/stateTypes";
 import createEffect from "./createEffect";
 import { EffectFn, EffectOptions } from "./effectTypes";
 
-export function adaptSyncEffect<T>(fn: EffectFn<T>): void;
-
-export function adaptSyncEffect<T>(
-  fn: EffectFn<T>,
-  depArray: Getter<any>[],
-  options?: EffectOptions
-): void;
-
 export default function adaptSyncEffect<T>(
   fn: EffectFn<T>,
   depArray?: Getter<any>[],

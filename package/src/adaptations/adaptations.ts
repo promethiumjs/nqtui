@@ -9,34 +9,21 @@ function renderComponent(
   componentAsyncDirective: AsyncDirective,
   htmlTemplateResult: TemplateResult
 ) {
-  if (one) {
-    renderArray1.push(componentAsyncDirective);
+  const renderArray = one ? renderArray1 : renderArray2;
+  const newOne = one ? false : true;
 
-    if (renderArray1.length === 1) {
-      queueMicrotask(() => {
-        one = false;
+  renderArray.push(componentAsyncDirective);
 
-        renderArray1.forEach((componentAsyncDirective) => {
-          componentAsyncDirective.setValue(htmlTemplateResult);
-        });
+  if (renderArray.length === 1) {
+    queueMicrotask(() => {
+      one = newOne;
 
-        renderArray1.length = 0;
+      renderArray.forEach((componentAsyncDirective) => {
+        componentAsyncDirective.setValue(htmlTemplateResult);
       });
-    }
-  } else {
-    renderArray2.push(componentAsyncDirective);
 
-    if (renderArray2.length === 1) {
-      queueMicrotask(() => {
-        one = true;
-
-        renderArray2.forEach((componentAsyncDirective) => {
-          componentAsyncDirective.setValue(htmlTemplateResult);
-        });
-
-        renderArray2.length = 0;
-      });
-    }
+      renderArray.length = 0;
+    });
   }
 }
 

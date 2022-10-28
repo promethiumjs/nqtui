@@ -1,27 +1,22 @@
+import { ExecuteFn } from "./effectTypes";
+
 const asyncEffectAndCleanupArray1 = [];
 const asyncEffectAndCleanupArray2 = [];
 let one = true;
 
-export default function addAsyncEffect(executeFn) {
-  if (one) {
-    asyncEffectAndCleanupArray1.push(executeFn);
+export default function addAsyncEffect(executeFn: ExecuteFn) {
+  const asyncEffectAndCleanupArray = one
+    ? asyncEffectAndCleanupArray1
+    : asyncEffectAndCleanupArray2;
+  const newOne = one ? false : true;
 
-    if (asyncEffectAndCleanupArray1.length === 1) {
-      setTimeout(() => {
-        one = false;
-        asyncEffectAndCleanupArray1.forEach((executeFn) => executeFn());
-        asyncEffectAndCleanupArray1.length = 0;
-      });
-    }
-  } else {
-    asyncEffectAndCleanupArray2.push(executeFn);
+  asyncEffectAndCleanupArray.push(executeFn);
 
-    if (asyncEffectAndCleanupArray2.length === 1) {
-      setTimeout(() => {
-        one = true;
-        asyncEffectAndCleanupArray2.forEach((executeFn) => executeFn());
-        asyncEffectAndCleanupArray2.length = 0;
-      });
-    }
+  if (asyncEffectAndCleanupArray.length === 1) {
+    setTimeout(() => {
+      one = newOne;
+      asyncEffectAndCleanupArray.forEach((executeFn) => executeFn());
+      asyncEffectAndCleanupArray.length = 0;
+    });
   }
 }
