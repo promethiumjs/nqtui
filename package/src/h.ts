@@ -5,7 +5,7 @@ import {
   PartInfo,
 } from "lit-html/async-directive.js";
 import queueRevertChangedToTrue from "./queueRevertChangedToTrue";
-import { renderComponent } from "./adaptations/adaptations";
+import adaptComponentFnEffect from "./adaptations/adaptEffect/adaptComponentFnEffect";
 import adaptSyncEffect from "./adaptations/adaptEffect/adaptSyncEffect";
 import { ChildPart, noChange, TemplateResult } from "lit-html";
 import { Component } from "./render";
@@ -66,14 +66,14 @@ class $ extends AsyncDirective {
       adaptSyncEffect(() => (htmlFn = Component(props, parent)), [])
     );
 
-    //create effect the re-runs component return function and renders the template result upon any state change
     const [
       ComponentCleanup,
       ComponentDependencyUpdate,
       [htmlTemplateResult],
-    ]: any = adaptSyncEffect(
-      (_, [htmlTemplateResult]: [TemplateResult]) =>
-        renderComponent(this, htmlTemplateResult),
+    ]: any = adaptComponentFnEffect(
+      (_, [htmlTemplateResult]: [TemplateResult]) => {
+        this.setValue(htmlTemplateResult);
+      },
       [htmlFn],
       { defer: true, isComponent: true }
     );

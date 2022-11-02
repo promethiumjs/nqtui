@@ -1,6 +1,6 @@
 {
   "name": "nqtui",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "description": "UI library built on top of lit-html",
   "source": "src/nqtui.ts",
   "main": "nqtui.js",
@@ -33,7 +33,7 @@
     "javascript"
   ],
   "dependencies": {
-    "lit-html": "^2.3.1"
+    "lit-html": "^2.4.0"
   },
   "devDependencies": {
     "@parcel/core": "^2.2.0",

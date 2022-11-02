@@ -1,19 +1,17 @@
-import { ExecuteFn } from "./effectTypes";
-
-const renderEffectArray1 = [];
+const renderEffectArray1: any = [];
 const renderEffectArray2 = [];
 let one = true;
 
-export default function addRenderEffect(executeFn: ExecuteFn) {
+export default function addRenderEffect(fn: any) {
   const renderEffectArray = one ? renderEffectArray1 : renderEffectArray2;
   const newOne = one ? false : true;
 
-  renderEffectArray.push(executeFn);
+  renderEffectArray.push(fn);
 
   if (renderEffectArray.length === 1) {
     queueMicrotask(() => {
       one = newOne;
-      renderEffectArray.forEach((executeFn) => executeFn());
+      renderEffectArray.forEach((fn) => fn());
       renderEffectArray.length = 0;
     });
   }

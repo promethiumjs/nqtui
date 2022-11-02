@@ -5,7 +5,7 @@ export type CleanupTree = Map<number, CleanupTree | Set<() => void>>;
 export type Effect = {
   firstRun: boolean;
   type: "async" | "sync" | "render" | "memo";
-  tracking?: "implicit" | "depArray";
+  tracking?: "implicit" | "depArray" | "componentFn";
   childCount: number;
   position: number | null;
   level: number | null;
@@ -14,6 +14,7 @@ export type Effect = {
   observableSubscriptionSets: Set<Set<Effect>>;
   staleStateValuesCount: number;
   returnValue?: any;
+  argsArray?: any[];
   sendSignal: (signal: "stale" | "fresh") => void;
 };
 
@@ -22,16 +23,18 @@ export type EffectOptions = {
   isComponent?: boolean;
 };
 
-export type EffectFn<R = any> = (
-  returnValue?: R,
-  argsArray?: any[]
-) => any | void;
+export type EffectFn = (returnValue?: any, argsArray?: any[]) => any | void;
 
-export type ExecuteFn =
-  | ((effect: Effect, fn: EffectFn<any>) => () => void)
-  | ((
-      effect: Effect,
-      fn: EffectFn<any>,
-      depArray: Getter<any>[],
-      options?: EffectOptions
-    ) => readonly [() => void, () => any[], any[]] | (() => void));
+export type ExecuteFn = (
+  effect: Effect,
+  fn: EffectFn,
+  depArray: Getter<any>[],
+  options?: EffectOptions
+) => () => void;
+
+export type ComponentFnExecuteFn = (
+  effect: Effect,
+  fn: EffectFn,
+  depArray: Getter<any>[],
+  options?: EffectOptions
+) => readonly [() => void, () => any[], any[]] | (() => void);
