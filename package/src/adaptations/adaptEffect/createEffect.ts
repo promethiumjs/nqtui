@@ -5,14 +5,12 @@ import setCleanupSet from "../setCleanupSet";
 import { Getter } from "../adaptState/stateTypes";
 import { Effect, EffectFn } from "./effectTypes";
 
-export default function createEffect<T>(
+export default function createEffect(
   type: "async" | "sync" | "render",
-  fn: EffectFn<T>,
+  tracking: "implicit" | "depArray" | "componentFn",
+  fn: EffectFn,
   depArray?: Getter<any>[]
 ) {
-  //determined if the effect is tracked by the state it uses implicitly, or using the
-  //state provided by its dependency array
-  const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
   const execute = executeFns[tracking];
 
   const effect: Effect = {

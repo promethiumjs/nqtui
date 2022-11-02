@@ -1,22 +1,18 @@
-import { ExecuteFn } from "./effectTypes";
-
-const asyncEffectAndCleanupArray1 = [];
-const asyncEffectAndCleanupArray2 = [];
+const asyncEffectArray1: any = [];
+const asyncEffectArray2 = [];
 let one = true;
 
-export default function addAsyncEffect(executeFn: ExecuteFn) {
-  const asyncEffectAndCleanupArray = one
-    ? asyncEffectAndCleanupArray1
-    : asyncEffectAndCleanupArray2;
+export default function addAsyncEffect(fn: any) {
+  const asyncEffectArray = one ? asyncEffectArray1 : asyncEffectArray2;
   const newOne = one ? false : true;
 
-  asyncEffectAndCleanupArray.push(executeFn);
+  asyncEffectArray.push(fn);
 
-  if (asyncEffectAndCleanupArray.length === 1) {
-    setTimeout(() => {
+  if (asyncEffectArray.length === 1) {
+    queueMicrotask(() => {
       one = newOne;
-      asyncEffectAndCleanupArray.forEach((executeFn) => executeFn());
-      asyncEffectAndCleanupArray.length = 0;
+      asyncEffectArray.forEach((fn) => fn());
+      asyncEffectArray.length = 0;
     });
   }
 }

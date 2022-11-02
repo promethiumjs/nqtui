@@ -38,21 +38,7 @@ function $04eedf882f5a48d8$export$2e2bcd8739ae039(componentAsyncDirective1) {
 }
 
 
-const $1ff481cd88aa17d5$var$renderArray1 = [];
-const $1ff481cd88aa17d5$var$renderArray2 = [];
-let $1ff481cd88aa17d5$var$one = true;
-function $1ff481cd88aa17d5$export$fa7f552cb3a457a6(componentAsyncDirective1, htmlTemplateResult) {
-    const renderArray = $1ff481cd88aa17d5$var$one ? $1ff481cd88aa17d5$var$renderArray1 : $1ff481cd88aa17d5$var$renderArray2;
-    const newOne = $1ff481cd88aa17d5$var$one ? false : true;
-    renderArray.push(componentAsyncDirective1);
-    if (renderArray.length === 1) queueMicrotask(()=>{
-        $1ff481cd88aa17d5$var$one = newOne;
-        renderArray.forEach((componentAsyncDirective)=>{
-            componentAsyncDirective.setValue(htmlTemplateResult);
-        });
-        renderArray.length = 0;
-    });
-}
+const $cf23c9ad92c46644$export$24642de4c13f18dd = [];
 
 
 function $4e1accf2a3fa4a57$export$2e2bcd8739ae039(effect) {
@@ -62,6 +48,34 @@ function $4e1accf2a3fa4a57$export$2e2bcd8739ae039(effect) {
     });
     return cleanupNode;
 }
+
+
+function $191ea01d20b057a5$export$2e2bcd8739ae039(effect) {
+    effect.observableSubscriptionSets.forEach((observableSubscriptionSet)=>{
+        observableSubscriptionSet.delete(effect);
+    });
+    effect.observableSubscriptionSets.clear();
+}
+
+
+function $403c411949f9c70b$export$52109d3cb696f898(effect, fn) {
+    //set `childCount` back to zero to enable children effects to obtain correct positions upon recreation
+    effect.childCount = 0;
+    //fire cleanups make sure proceedings go smoothly
+    const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
+    cleanupSet.forEach((cleanup)=>{
+        cleanup();
+    });
+    cleanupSet.clear();
+    //push effect onto context to enable tracking by state and memos
+    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
+    fn(cleanupSet);
+    //add cleanup to remove effect from all old subscriptions
+    cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
+    //remove effect from context to disable tracking by state and memos
+    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
+}
+
 
 
 function $33e3bca08184b88c$var$traverseAndEvaluate(cleanupNode) {
@@ -86,29 +100,12 @@ function $33e3bca08184b88c$export$2e2bcd8739ae039(effect) {
 }
 
 
-function $191ea01d20b057a5$export$2e2bcd8739ae039(effect) {
-    effect.observableSubscriptionSets.forEach((observableSubscriptionSet)=>{
-        observableSubscriptionSet.delete(effect);
-    });
-    effect.observableSubscriptionSets.clear();
+function $44d84749cfb99c59$export$2e2bcd8739ae039(effect, fn) {
+    (0, $403c411949f9c70b$export$52109d3cb696f898)(effect, (cleanupSet)=>$44d84749cfb99c59$var$internalFn(effect, fn, cleanupSet));
+    //return cleanup function for effect and its descendants
+    return ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect);
 }
-
-
-
-const $cf23c9ad92c46644$export$24642de4c13f18dd = [];
-
-
-function $ceea39f99f315fb7$var$implicitDependencyExecuteFn(effect, fn) {
-    //set `childCount` back to zero to enable children effects to obtain correct positions upon recreation
-    effect.childCount = 0;
-    //fire cleanups make sure proceedings go smoothly
-    const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
-    cleanupSet.forEach((cleanup)=>{
-        cleanup();
-    });
-    cleanupSet.clear();
-    //push effect onto context to enable tracking by state and memos
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
+function $44d84749cfb99c59$var$internalFn(effect, fn, cleanupSet) {
     //call effect with previous return value
     const fnReturnValue = fn(effect.returnValue);
     //create `returnValueCleanup` to be called on next run of effect
@@ -116,35 +113,22 @@ function $ceea39f99f315fb7$var$implicitDependencyExecuteFn(effect, fn) {
         if (typeof fnReturnValue === "function") //extract new `returnValue` from effect's returned function
         effect.returnValue = fnReturnValue();
     };
-    //add cleanup to obtain new return value and remove effect from all old subscriptions
-    cleanupSet.add(returnValueCleanup).add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
-    //remove effect from context to disable tracking by state and memos
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
-    //return cleanup function for effect and its descendants
+    cleanupSet.add(returnValueCleanup);
+}
+
+
+
+
+function $0f0c8a83c8f2e064$export$b43a9f030091b83d(effect, fn, depArray, options = {}) {
+    (0, $403c411949f9c70b$export$52109d3cb696f898)(effect, (cleanupSet)=>$0f0c8a83c8f2e064$var$internalFn(effect, fn, depArray, options, cleanupSet));
     return ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect);
 }
-function $ceea39f99f315fb7$var$dependencyArrayExecuteFn(effect, fn, depArray, options = {}) {
-    //to enable children effects to obtain correct positions upon recreation
-    effect.childCount = 0;
-    //fire cleanups make sure proceedings go smoothly
-    const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
-    cleanupSet.forEach((cleanup)=>{
-        cleanup();
-    });
-    cleanupSet.clear();
-    //push effect onto context to enable tracking by state and memos
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
-    //set tracking to "implicit" to enable tracking by state and memos in `depArray`
-    effect.tracking = "implicit";
-    const argsArray = depArray.map((state)=>state());
-    //set tracking back to "depArray" to disable other forms of implicit tracking
-    //(only allow state and memos in `depArray` to track effect)
-    effect.tracking = "depArray";
+function $0f0c8a83c8f2e064$var$internalFn(effect, fn, depArray, options = {}, cleanupSet) {
     //if effect is supposed to be deferred, do nothing on the first run
     if (effect.firstRun && options.defer) effect.firstRun = false;
     else {
         //call effect with previous return value and previous state values of tracking state and memos in an `argsArray`
-        const fnReturnValue = fn(effect.returnValue, argsArray);
+        const fnReturnValue = fn(effect.returnValue, effect.argsArray || []);
         //create `returnValueCleanup` to be called on next run of effect
         const returnValueCleanup = ()=>{
             if (typeof fnReturnValue === "function") //extract new `returnValue` from effect's returned function
@@ -153,53 +137,79 @@ function $ceea39f99f315fb7$var$dependencyArrayExecuteFn(effect, fn, depArray, op
         //add cleanup to obtain new return value
         cleanupSet.add(returnValueCleanup);
     }
-    //add cleanup to remove effect from all old subscriptions
-    cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
-    //remove effect from context to disable tracking by state and memos
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
-    //if effect is a component-wrapping effect, return cleanup function, function to `updateEffectDependencies` outside
-    //normal flow, and `argsArray`
-    //if not, return just the cleanup function
-    const returnExp = options.isComponent ? [
-        ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect),
-        ()=>$ceea39f99f315fb7$var$updateEffectDependencies(effect, depArray),
-        argsArray, 
-    ] : ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect);
-    return returnExp;
-}
-//created for the purpose of component-wrapping effects
-function $ceea39f99f315fb7$var$updateEffectDependencies(effect, depArray) {
-    const cleanupSet = (0, $4e1accf2a3fa4a57$export$2e2bcd8739ae039)(effect).get(0);
-    cleanupSet.forEach((cleanup)=>{
-        cleanup();
-    });
-    cleanupSet.clear();
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).push(effect);
+    //set tracking to "implicit" to enable tracking by state and memos in `depArray`
     effect.tracking = "implicit";
-    const argsArray = depArray.map((state)=>state());
+    effect.argsArray = depArray.map((state)=>state());
+    //set tracking back to "depArray" to disable other forms of implicit tracking
+    //(only allow state and memos in `depArray` to track effect)
     effect.tracking = "depArray";
-    cleanupSet.add(()=>(0, $191ea01d20b057a5$export$2e2bcd8739ae039)(effect));
-    (0, $cf23c9ad92c46644$export$24642de4c13f18dd).pop();
-    return argsArray;
 }
+
+
+
+
+
+function $574a7d8879eadbab$export$2e2bcd8739ae039(effect, depArray) {
+    (0, $403c411949f9c70b$export$52109d3cb696f898)(effect, ()=>$574a7d8879eadbab$var$internalFn(effect, depArray));
+    return effect.argsArray;
+}
+function $574a7d8879eadbab$var$internalFn(effect, depArray) {
+    effect.tracking = "implicit";
+    effect.argsArray = depArray.map((state)=>state());
+    effect.tracking = "depArray";
+}
+
+
+function $30a41fdbfe66e9a8$export$9a2f3fcb7b180ad7(effect, fn, depArray, options = {}) {
+    (0, $403c411949f9c70b$export$52109d3cb696f898)(effect, (cleanupSet)=>$30a41fdbfe66e9a8$export$2e2bcd8739ae039(effect, fn, depArray, options, cleanupSet));
+    return [
+        ()=>(0, $33e3bca08184b88c$export$2e2bcd8739ae039)(effect),
+        ()=>(0, $574a7d8879eadbab$export$2e2bcd8739ae039)(effect, depArray),
+        effect.argsArray, 
+    ];
+}
+function $30a41fdbfe66e9a8$export$2e2bcd8739ae039(effect, fn, depArray, options = {}, cleanupSet) {
+    //set tracking to "implicit" to enable tracking by state and memos in `depArray`
+    effect.tracking = "implicit";
+    effect.argsArray = depArray.map((state)=>state());
+    //set tracking back to "depArray" to disable other forms of implicit tracking
+    //(only allow state and memos in `depArray` to track effect)
+    effect.tracking = "depArray";
+    //if effect is supposed to be deferred, do nothing on the first run
+    if (effect.firstRun && options.defer) effect.firstRun = false;
+    else {
+        //call effect with previous return value and previous state values of tracking state and memos in an `argsArray`
+        const fnReturnValue = fn(effect.returnValue, effect.argsArray);
+        //create `returnValueCleanup` to be called on next run of effect
+        const returnValueCleanup = ()=>{
+            if (typeof fnReturnValue === "function") //extract new `returnValue` from effect's returned function
+            effect.returnValue = fnReturnValue();
+        };
+        //add cleanup to obtain new return value
+        cleanupSet.add(returnValueCleanup);
+    }
+}
+
+
 const $ceea39f99f315fb7$var$executeFns = {
-    implicit: $ceea39f99f315fb7$var$implicitDependencyExecuteFn,
-    depArray: $ceea39f99f315fb7$var$dependencyArrayExecuteFn
+    implicit: (0, $44d84749cfb99c59$export$2e2bcd8739ae039),
+    depArray: (0, $0f0c8a83c8f2e064$export$b43a9f030091b83d),
+    componentFn: (0, $30a41fdbfe66e9a8$export$9a2f3fcb7b180ad7)
 };
 var $ceea39f99f315fb7$export$2e2bcd8739ae039 = $ceea39f99f315fb7$var$executeFns;
 
 
-const $0728fecdbf281315$var$asyncEffectAndCleanupArray1 = [];
-const $0728fecdbf281315$var$asyncEffectAndCleanupArray2 = [];
+const $0728fecdbf281315$var$asyncEffectArray1 = [];
+const $0728fecdbf281315$var$asyncEffectArray2 = [];
 let $0728fecdbf281315$var$one = true;
-function $0728fecdbf281315$export$2e2bcd8739ae039(executeFn1) {
-    const asyncEffectAndCleanupArray = $0728fecdbf281315$var$one ? $0728fecdbf281315$var$asyncEffectAndCleanupArray1 : $0728fecdbf281315$var$asyncEffectAndCleanupArray2;
+function $0728fecdbf281315$export$2e2bcd8739ae039(fn1) {
+    const asyncEffectArray = $0728fecdbf281315$var$one ? $0728fecdbf281315$var$asyncEffectArray1 : $0728fecdbf281315$var$asyncEffectArray2;
     const newOne = $0728fecdbf281315$var$one ? false : true;
-    asyncEffectAndCleanupArray.push(executeFn1);
-    if (asyncEffectAndCleanupArray.length === 1) setTimeout(()=>{
+    asyncEffectArray.push(fn1);
+    if (asyncEffectArray.length === 1) queueMicrotask(()=>{
         $0728fecdbf281315$var$one = newOne;
-        asyncEffectAndCleanupArray.forEach((executeFn)=>executeFn());
-        asyncEffectAndCleanupArray.length = 0;
+        asyncEffectArray.forEach((fn)=>fn());
+        asyncEffectArray.length = 0;
     });
 }
 
@@ -207,13 +217,13 @@ function $0728fecdbf281315$export$2e2bcd8739ae039(executeFn1) {
 const $f0832425b32a585f$var$renderEffectArray1 = [];
 const $f0832425b32a585f$var$renderEffectArray2 = [];
 let $f0832425b32a585f$var$one = true;
-function $f0832425b32a585f$export$2e2bcd8739ae039(executeFn1) {
+function $f0832425b32a585f$export$2e2bcd8739ae039(fn1) {
     const renderEffectArray = $f0832425b32a585f$var$one ? $f0832425b32a585f$var$renderEffectArray1 : $f0832425b32a585f$var$renderEffectArray2;
     const newOne = $f0832425b32a585f$var$one ? false : true;
-    renderEffectArray.push(executeFn1);
+    renderEffectArray.push(fn1);
     if (renderEffectArray.length === 1) queueMicrotask(()=>{
         $f0832425b32a585f$var$one = newOne;
-        renderEffectArray.forEach((executeFn)=>executeFn());
+        renderEffectArray.forEach((fn)=>fn());
         renderEffectArray.length = 0;
     });
 }
@@ -291,10 +301,7 @@ function $4e86dcede83c4655$export$2e2bcd8739ae039(effect) {
 }
 
 
-function $3d1734ecfb3ab0e5$export$2e2bcd8739ae039(type, fn, depArray) {
-    //determined if the effect is tracked by the state it uses implicitly, or using the
-    //state provided by its dependency array
-    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+function $3d1734ecfb3ab0e5$export$2e2bcd8739ae039(type, tracking, fn, depArray) {
     const execute = (0, $ceea39f99f315fb7$export$2e2bcd8739ae039)[tracking];
     const effect = {
         //whether or not the effect hasn't been ran before
@@ -336,9 +343,20 @@ function $3d1734ecfb3ab0e5$export$2e2bcd8739ae039(type, fn, depArray) {
 }
 
 
+function $7f5aa80b032d6a3a$export$2e2bcd8739ae039(fn, depArray, options) {
+    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("sync", "componentFn", fn, depArray);
+    //return cleanup function / component cleanup array
+    return execute(effect, fn, depArray, options);
+}
+
+
+
 function $dd1a9c42706c6616$export$2e2bcd8739ae039(fn, depArray, options) {
-    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("sync", fn, depArray);
-    //sync effects are able to return cleanup functions due to their synchronous nature
+    //determine if the effect is tracked by the state it uses implicitly, or using the
+    //state provided by its dependency array
+    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("sync", tracking, fn, depArray);
+    //return cleanup function / component cleanup array
     return execute(effect, fn, depArray, options);
 }
 
@@ -373,8 +391,9 @@ class $d7efe1102037d5ee$var$$ extends (0, $6oBH7$AsyncDirective) {
         let htmlFn;
         //initialize component effects and memos and store the cleanup (1st cleanup)
         this.cleanups.push((0, $dd1a9c42706c6616$export$2e2bcd8739ae039)(()=>htmlFn = Component2(props, parent), []));
-        //create effect the re-runs component return function and renders the template result upon any state change
-        const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1], ] = (0, $dd1a9c42706c6616$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>(0, $1ff481cd88aa17d5$export$fa7f552cb3a457a6)(this, htmlTemplateResult), [
+        const [ComponentCleanup, ComponentDependencyUpdate, [htmlTemplateResult1], ] = (0, $7f5aa80b032d6a3a$export$2e2bcd8739ae039)((_, [htmlTemplateResult])=>{
+            this.setValue(htmlTemplateResult);
+        }, [
             htmlFn
         ], {
             defer: true,
@@ -544,17 +563,29 @@ function $9873fc45146bd570$export$2e2bcd8739ae039(initialValue) {
 
 
 function $280590d7df928610$export$2e2bcd8739ae039(fn, depArray, options) {
-    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("async", fn, depArray);
-    //execute effect asynchronously after next screen paint
-    setTimeout(()=>execute(effect, fn, depArray, options));
+    //determine if the effect is tracked by the state it uses implicitly, or using the
+    //state provided by its dependency array
+    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("render", tracking, fn, depArray);
+    //execute effect asynchronously after next screen paint and return a promise that
+    //resolves with the cleanup function / component cleanup array
+    return new Promise((resolve)=>setTimeout(()=>{
+            resolve(execute(effect, fn, depArray, options));
+        }));
 }
 
 
 
 function $c81bb8edf610f60a$export$2e2bcd8739ae039(fn, depArray, options) {
-    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("render", fn, depArray);
-    //execute effect asynchronously before next screen paint
-    queueMicrotask(()=>execute(effect, fn, depArray, options));
+    //determine if the effect is tracked by the state it uses implicitly, or using the
+    //state provided by its dependency array
+    const tracking = typeof depArray === "undefined" ? "implicit" : "depArray";
+    const [execute, effect] = (0, $3d1734ecfb3ab0e5$export$2e2bcd8739ae039)("render", tracking, fn, depArray);
+    //execute effect asynchronously before next screen paint and return a promise that
+    //resolves with the cleanup function / component cleanup array
+    return new Promise((resolve)=>{
+        queueMicrotask(()=>resolve(execute(effect, fn, depArray, options)));
+    });
 }
 
 

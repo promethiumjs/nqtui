@@ -1,3 +1,2 @@
-import { ExecuteFn } from "./effectTypes";
-export default function addAsyncEffect(executeFn: ExecuteFn): void;
+export default function addAsyncEffect(fn: any): void;
 //# sourceMappingURL=addAsyncEffect.d.ts.map

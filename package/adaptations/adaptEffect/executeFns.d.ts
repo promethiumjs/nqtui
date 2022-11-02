@@ -1,10 +1,10 @@
-import { Effect, EffectFn, EffectOptions } from "./effectTypes";
-import { Getter } from "../adaptState/stateTypes";
-declare function implicitDependencyExecuteFn(effect: Effect, fn: EffectFn): () => void;
-declare function dependencyArrayExecuteFn(effect: Effect, fn: EffectFn, depArray: Getter[], options?: EffectOptions): readonly [() => void, () => any[], any[]] | (() => void);
+import implicitDependencyExecuteFn from "./implicitDependencyExecuteFn";
+import { dependencyArrayExecuteFn } from "./dependencyArrayExecuteFn";
+import { componentFnExecuteFn } from "./componentFnExecuteFn";
 declare const executeFns: {
     implicit: typeof implicitDependencyExecuteFn;
     depArray: typeof dependencyArrayExecuteFn;
+    componentFn: typeof componentFnExecuteFn;
 };
 export default executeFns;
 //# sourceMappingURL=executeFns.d.ts.map
