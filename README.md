@@ -1,3 +1,5 @@
+**Note: Nqtui has been moved into the Promethium JS package**
+
 # NQTUI
 
 _JavaScript UI library built on top of [lit-html](https://lit.dev/docs/libraries/standalone-templates/)_
